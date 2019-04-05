@@ -1,14 +1,25 @@
-interface ResultValid {
-  valid: true;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  error: any;
+interface ValidationErrorObject {
+  [key: string]: ValidationError;
 }
 
-interface ResultInvalid {
-  valid: false;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  error: any;
+export type ValidationError = string | ValidationErrorObject;
+
+interface ResultValid {
+  valid: true;
+  error: null;
 }
+
+interface ResultInvalidPrimitive {
+  valid: false;
+  error: string;
+}
+
+interface ResultInvalidObject {
+  valid: false;
+  error: ValidationErrorObject;
+}
+
+type ResultInvalid = ResultInvalidPrimitive | ResultInvalidObject;
 
 type Result = ResultValid | ResultInvalid;
 
@@ -21,7 +32,9 @@ class OKAny {
     if (msg) this.validationMsg = msg;
   }
 
-  protected error(msg: string): ResultInvalid {
+  protected error(msg: string): ResultInvalidPrimitive;
+  protected error(msg: ValidationErrorObject): ResultInvalidObject;
+  protected error(msg: string | ValidationErrorObject) {
     return { valid: false, error: msg };
   }
 

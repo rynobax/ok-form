@@ -9,6 +9,7 @@ describe('parsing', () => {
     ['false', false, false],
     ['object', {}, false],
     ['array', [5], false],
+    ['null', null, false],
   ])('%s', (_, value, valid) => {
     const schema = ok.number();
     const result = schema.validate(value);

@@ -5,13 +5,14 @@
   "author": "Ryan Baxley",
   "license": "MIT",
   "scripts": {
-    "clean": "rimraf coverage build tmp",
-    "build": "babel ./src -d ./lib --ignore=**/__tests__/* --extensions .ts",
+    "clean": "rimraf lib/*",
+    "build": "babel ./src -o ./lib/index.js --ignore=**/__tests__/* --extensions .ts",
     "release": "yarn run clean && yarn run build",
     "typecheck": "tsc -w",
     "lint": "eslint src/**/*.ts --max-warnings=0",
     "test": "jest",
-    "test:watch": "jest --watch"
+    "test:watch": "jest --watch",
+    "size": "bundlesize"
   },
   "dependencies": {},
   "devDependencies": {
@@ -24,6 +25,7 @@
     "@types/jest": "^24.0.11",
     "@typescript-eslint/eslint-plugin": "^1.6.0",
     "@typescript-eslint/parser": "^1.6.0",
+    "bundlesize": "^0.17.1",
     "eslint": "^5.16.0",
     "eslint-config-prettier": "^4.1.0",
     "eslint-plugin-jest": "^22.4.1",
@@ -44,5 +46,11 @@
       "prettier --write",
       "git add"
     ]
-  }
+  },
+  "bundlesize": [
+    {
+      "path": "./lib/index.js",
+      "maxSize": "5 kB"
+    }
+  ]
 }

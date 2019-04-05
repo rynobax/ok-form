@@ -4,6 +4,7 @@
   "description": "",
   "dependencies": {},
   "devDependencies": {
+    "@babel/cli": "^7.4.3",
     "@babel/core": "^7.4.3",
     "@babel/plugin-proposal-class-properties": "^7.4.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.4.3",
@@ -22,8 +23,9 @@
   },
   "scripts": {
     "clean": "rimraf coverage build tmp",
-    "build": "tsc -p tsconfig.release.json",
-    "build:watch": "tsc -w -p tsconfig.release.json",
+    "build": "babel ./src -d ./lib --ignore=**/__tests__/* --extensions .ts",
+    "release": "yarn run clean && yarn run build",
+    "typecheck": "tsc -w",
     "lint": "eslint src/**/*.ts --max-warnings=0",
     "test": "jest",
     "test:watch": "jest --watch"

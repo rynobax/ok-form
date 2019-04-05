@@ -11,8 +11,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "strict": true,
+    "incremental": true,
+    "outDir": "tsBuild"
   },
-  "include": [
-    "src/**/*",
-  ]
+  "include": ["src/**/*"]
 }

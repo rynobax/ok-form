@@ -1,4 +1,4 @@
-# valid
+# ok-form
 
 minimal js object validation
 
@@ -10,3 +10,4 @@ minimal js object validation
 [ ] Reference other variables
 [ ] Travis CI
 [ ] Bundlesize in CI
+[ ] See if formik wants to suggest it

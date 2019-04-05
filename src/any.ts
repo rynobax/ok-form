@@ -35,9 +35,10 @@ class OKAny {
     return this;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public validate(value: any): Result {
+  public validate(value: unknown): Result {
     if (this.isRequired) {
+      // TODO: I don't think this is good
+      // probably just dont check at all
       if (value === null || value === undefined || value === '')
         return this.error(this.requiredMsg);
     }

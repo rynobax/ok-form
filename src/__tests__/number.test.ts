@@ -1,7 +1,6 @@
 import ok from '../index';
 
 describe('parsing', () => {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   test.each<[string, any, boolean]>([
     ['empty string', '   ', false],
     ['number', 5, true],

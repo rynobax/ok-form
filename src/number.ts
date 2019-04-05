@@ -19,8 +19,7 @@ class OKNumber extends OKAny {
     super(msg || 'Must be a number');
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  public validate(input: any) {
+  public validate(input: unknown) {
     // Parent validation
     const superRes = super.validate(input);
     if (!superRes.valid) return superRes;

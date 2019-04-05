@@ -1,3 +1,3 @@
-const schema = {};
+import ok from './ok';
 
-export default schema;
+export default ok;

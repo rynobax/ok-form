@@ -26,7 +26,7 @@ test('custom message', () => {
 
 describe('simple', () => {
   const schema = ok.object({
-    num: ok.number().required(),
+    num: ok.number(),
   });
 
   test('invalid', () => {
@@ -46,9 +46,9 @@ describe('simple', () => {
 
 describe('multiple keys', () => {
   const schema = ok.object({
-    a: ok.number().required(),
-    b: ok.number().required(),
-    c: ok.number().required(),
+    a: ok.number(),
+    b: ok.number(),
+    c: ok.number(),
   });
 
   test('invalid', () => {
@@ -74,11 +74,11 @@ describe('multiple keys', () => {
 
 describe('nested', () => {
   const schema = ok.object({
-    a: ok.number().required(),
+    a: ok.number(),
     nested: ok.object({
-      b: ok.number().required(),
+      b: ok.number(),
       soDeep: ok.object({
-        c: ok.number().required(),
+        c: ok.number(),
       }),
     }),
   });
@@ -117,13 +117,8 @@ describe('nested', () => {
   });
 });
 
-describe.only('required', () => {
-  const schema = ok
-    .object({
-      a: ok.number(),
-      b: ok.number(),
-    })
-    .required();
+describe('required', () => {
+  const schema = ok.object({});
 
   test('invalid', () => {
     const result = schema.validate(null);
@@ -134,4 +129,32 @@ describe.only('required', () => {
     const result = schema.validate({});
     expect(result.valid).toBe(true);
   });
+});
+
+describe('nullable keys', () => {
+  const schema = ok.object({
+    a: ok.number().nullable(),
+    b: ok.number().nullable(),
+  });
+
+  test('null valid', () => {
+    const result = schema.validate({
+      a: null,
+      b: null,
+    });
+    expect(result.valid).toBe(true);
+  });
+
+  test('missing valid', () => {
+    const result = schema.validate({});
+    expect(result.valid).toBe(true);
+  });
+});
+
+test('extra keys are ok', () => {
+  const schema = ok.object({
+    a: ok.number(),
+  });
+  const result = schema.validate({ a: 5, b: 5 });
+  expect(result.valid).toBe(true);
 });

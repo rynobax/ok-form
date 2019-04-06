@@ -4,6 +4,7 @@ minimal js object validation
 
 # Todo
 
+- [ ] if number is null, dont run "number" tests, but still run "any" tests
 - [ ] refactor min/max to push fns
 - [ ] handle casting bad schema
 - [ ] array

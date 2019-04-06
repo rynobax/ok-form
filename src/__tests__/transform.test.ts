@@ -40,3 +40,12 @@ describe('transform order matters', () => {
     expect(result.valid).toBe(false);
   });
 });
+
+test.only('tranform can convert away null values', () => {
+  const schema = ok
+    .number()
+    .transform(v => (v === null ? 5 : v))
+    .max(10);
+  const result = schema.validate(null);
+  expect(result.valid).toBe(true);
+});

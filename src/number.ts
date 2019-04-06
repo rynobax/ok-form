@@ -2,11 +2,15 @@ import OKAny, { TransformFn } from './any';
 
 const parseNumber = (val: unknown) => {
   if (typeof val === 'string') {
+    // For strings, any string of spaces is considered empty
     const isEmpty = val.trim() === '';
-    if (isEmpty) return NaN;
+    if (isEmpty) return null;
+    // If it isn't empty, it is parsed with Number
     else return Number(val);
   }
-  if (typeof val === 'number') return val;
+  // Numbers, null, undefined are returned directly
+  if (typeof val === 'number' || val === null || val === undefined) return val;
+  // Everything else is considered not a number
   return NaN;
 };
 
@@ -28,11 +32,6 @@ class OKNumber<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     const testFn = (val: Input) => (predicate(val as any) ? null : msg);
     this.tests.push(testFn);
   };
-
-  public validate(input: Input) {
-    // Generic validation
-    return super.validate(input);
-  }
 
   public min(min: number, msg?: string) {
     this.addTest(

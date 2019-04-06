@@ -2,9 +2,10 @@ import OKAny from './any';
 import OKNumber from './number';
 import OKObject, { Shape } from './object';
 
+/* eslint-disable @typescript-eslint/no-explicit-any */
 const ok = {
-  any: <Input = any, Parent = any, Root = any>() =>
-    new OKAny<Input, Parent, Root>(),
+  any: <Input = any, Parent = any, Root = any>(msg?: string) =>
+    new OKAny<Input, Parent, Root>(msg),
   number: <Input = any, Parent = any, Root = any>(msg?: string) =>
     new OKNumber<Input, Parent, Root>(msg),
   object: <Input = any, Parent = any, Root = any>(

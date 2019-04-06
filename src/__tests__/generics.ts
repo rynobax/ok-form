@@ -35,6 +35,7 @@ describe('input shape', () => {
       bar: true,
     });
 
+    /* BAD */
     schema.validate({
       foo: '1',
     });

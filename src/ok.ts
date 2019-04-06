@@ -3,11 +3,11 @@ import OKNumber from './number';
 import OKObject, { Shape } from './object';
 
 const ok = {
-  any: <Input = unknown, Parent = unknown, Root = unknown>() =>
+  any: <Input = any, Parent = any, Root = any>() =>
     new OKAny<Input, Parent, Root>(),
-  number: <Input = unknown, Parent = unknown, Root = unknown>(msg?: string) =>
+  number: <Input = any, Parent = any, Root = any>(msg?: string) =>
     new OKNumber<Input, Parent, Root>(msg),
-  object: <Input = unknown, Parent = unknown, Root = unknown>(
+  object: <Input = any, Parent = any, Root = any>(
     obj: Shape<Input>,
     msg?: string
   ) => new OKObject<Input, Parent, Root>(obj, msg),

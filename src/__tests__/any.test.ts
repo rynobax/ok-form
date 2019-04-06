@@ -40,7 +40,47 @@ describe('any', () => {
   });
 
   describe('test', () => {
-    test.todo('invalid');
-    test.todo('valid');
+    describe('predicate', () => {
+      const customMsg = 'Must not be 0';
+      test('valid', () => {
+        const schema = ok.any().test(v => v !== 0, customMsg);
+        const result = schema.validate(42);
+        expect(result.valid).toBe(true);
+      });
+
+      test('invalid', () => {
+        const schema = ok.any().test(v => v !== 0, customMsg);
+        const result = schema.validate(0);
+        expect(result.valid).toBe(false);
+      });
+
+      test('message', () => {
+        const schema = ok.any().test(v => v !== 0, customMsg);
+        const result = schema.validate(0);
+        expect(result.error).toBe(customMsg);
+      });
+    });
+
+    describe('string', () => {
+      const customMsg = 'Must not be 0';
+      const schema = ok.any().test(v => {
+        if (v === 0) return customMsg;
+        return;
+      });
+      test('valid', () => {
+        const result = schema.validate(42);
+        expect(result.valid).toBe(true);
+      });
+
+      test('invalid', () => {
+        const result = schema.validate(0);
+        expect(result.valid).toBe(false);
+      });
+
+      test('message', () => {
+        const result = schema.validate(0);
+        expect(result.error).toBe(customMsg);
+      });
+    });
   });
 });

@@ -23,27 +23,24 @@ type ResultInvalid = ResultInvalidPrimitive | ResultInvalidObject;
 
 type Result = ResultValid | ResultInvalid;
 
-type PredicateTestFn = (val: unknown) => boolean;
-type MessageTestFn = (val: unknown) => string | null | undefined | void;
-type TestFn = PredicateTestFn | MessageTestFn;
-
-interface PredicateTest {
-  testFn: PredicateTestFn;
-  msg: string;
-  type: 'pred';
+interface TestContext {
+  parent: unknown;
+  root: unknown;
 }
 
-interface MessageTest {
-  testFn: MessageTestFn;
-  type: 'msg';
-}
+type TestFn = (
+  val: unknown,
+  context: TestContext
+) => string | false | null | undefined | void;
 
 class OKAny {
   private isRequired = false;
   private requiredMsg = 'Required';
   protected validationMsg = 'Invalid';
+  private tests: TestFn[] = [];
 
-  private tests: (PredicateTest | MessageTest)[] = [];
+  public __parent: unknown;
+  public __root: unknown;
 
   public constructor(msg?: string) {
     if (msg) this.validationMsg = msg;
@@ -65,14 +62,8 @@ class OKAny {
     return this;
   }
 
-  public test(testFn: PredicateTestFn, msg: string): OKAny;
-  public test(testFn: MessageTestFn): OKAny;
-  public test(testFn: TestFn, msg?: string): OKAny {
-    if (msg) {
-      this.tests.push({ testFn: testFn as PredicateTestFn, msg, type: 'pred' });
-    } else {
-      this.tests.push({ testFn: testFn as MessageTestFn, type: 'msg' });
-    }
+  public test(testFn: TestFn): OKAny {
+    this.tests.push(testFn);
     return this;
   }
 
@@ -84,16 +75,11 @@ class OKAny {
         return this.error(this.requiredMsg);
     }
 
-    for (const test of this.tests) {
-      if (test.type === 'pred') {
-        const { testFn, msg } = test;
-        const valid = testFn(value);
-        if (!valid) return this.error(msg);
-      } else {
-        const { testFn } = test;
-        const msg = testFn(value);
-        if (msg) return this.error(msg);
-      }
+    const parent = this.__parent;
+    const root = this.__root;
+    for (const testFn of this.tests) {
+      const msg = testFn(value, { parent, root });
+      if (msg) return this.error(msg);
     }
 
     return this.success();

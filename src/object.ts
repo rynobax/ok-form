@@ -30,6 +30,11 @@ class OKNumber extends OKAny {
     const error: ValidationError = {};
     for (const [key, ok] of Object.entries(this.shape)) {
       const val = (input as UnknownObj)[key];
+
+      ok.__parent = input;
+      // If this already has a root, pass in that one
+      ok.__root = this.__root || input;
+
       const res = ok.validate(val);
       if (!res.valid) {
         foundError = true;

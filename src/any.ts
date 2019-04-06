@@ -53,7 +53,6 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
   /* Instance keeping track of stuff */
   private isNullable = false;
   private requiredMessage = 'Required';
-  protected validationMsg = 'Invalid';
 
   protected tests: Test<Input, Parent, Root>[] = [];
 
@@ -67,15 +66,8 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
     return { parent, root };
   }
 
-  /**
-   * @param msg The error message if the field cannot be coerced
-   */
-  public constructor(msg?: string) {
-    if (msg) {
-      this.validationMsg = msg;
-    }
-    return this;
-  }
+  // No validation message, because any excepts anything!
+  public constructor() {}
 
   protected error(msg: string): ResultInvalidPrimitive;
   protected error(msg: ValidationErrorObject): ResultInvalidObject;

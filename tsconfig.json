@@ -14,5 +14,6 @@
     "incremental": true,
     "outDir": "tsBuild"
   },
-  "include": ["src/**/*"]
+  "include": ["src/**/*"],
+  "exclude": ["src/__tests__/generics.ts"]
 }

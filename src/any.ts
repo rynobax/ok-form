@@ -23,24 +23,24 @@ type ResultInvalid = ResultInvalidPrimitive | ResultInvalidObject;
 
 type Result = ResultValid | ResultInvalid;
 
-interface TestContext {
-  parent: unknown;
-  root: unknown;
+interface TestContext<Parent, Root> {
+  parent: Parent;
+  root: Root;
 }
 
-type TestFn = (
-  val: unknown,
-  context: TestContext
+type TestFn<Input, Parent, Root> = (
+  val: Input,
+  context: TestContext<Parent, Root>
 ) => string | false | null | undefined | void;
 
-class OKAny<InputShape = unknown> {
+class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
   private isRequired = false;
   private requiredMsg = 'Required';
   protected validationMsg = 'Invalid';
-  private tests: TestFn[] = [];
+  private tests: TestFn<Input, Parent, Root>[] = [];
 
-  public __parent: unknown;
-  public __root: unknown;
+  public __parent: Parent | undefined;
+  public __root: Root | undefined;
 
   public constructor(msg?: string) {
     if (msg) this.validationMsg = msg;
@@ -62,12 +62,12 @@ class OKAny<InputShape = unknown> {
     return this;
   }
 
-  public test(testFn: TestFn): OKAny<InputShape> {
+  public test(testFn: TestFn<Input, Parent, Root>): OKAny<Input, Parent, Root> {
     this.tests.push(testFn);
     return this;
   }
 
-  public validate(value: InputShape): Result {
+  public validate(value: Input): Result {
     if (this.isRequired) {
       // TODO: I don't think this is good
       // probably just dont check at all
@@ -75,8 +75,9 @@ class OKAny<InputShape = unknown> {
         return this.error(this.requiredMsg);
     }
 
-    const parent = this.__parent;
-    const root = this.__root;
+    // TODO: are these assertions ok
+    const parent = this.__parent as Parent;
+    const root = this.__root as Root;
     for (const testFn of this.tests) {
       const msg = testFn(value, { parent, root });
       if (msg) return this.error(msg);

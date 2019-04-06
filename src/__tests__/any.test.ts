@@ -29,10 +29,11 @@ describe('any', () => {
       const result = schema.validate(null);
       expect(result.error).toEqual(customMsg);
     });
-  });
 
-  describe('nullable', () => {
-    test.todo('invalid');
-    test.todo('valid');
+    test('not required takes null', () => {
+      const NRschema = ok.any();
+      const result = NRschema.validate(null);
+      expect(result.valid).toBe(true);
+    });
   });
 });

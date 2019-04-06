@@ -76,6 +76,11 @@ describe('negative', () => {
   test.todo('valid');
 });
 
+describe('precision', () => {
+  test.todo('invalid');
+  test.todo('valid');
+});
+
 describe('integer', () => {
   test('invalid', () => {
     const schema = ok.number().integer();

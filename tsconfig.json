@@ -15,5 +15,5 @@
     "outDir": "tsBuild"
   },
   "include": ["src/**/*"],
-  "exclude": ["src/__tests__/generics.ts"]
+  "exclude": ["src/__tests__/generics"]
 }

@@ -1,6 +1,6 @@
 /* This file should be manually inspected */
 
-import ok from '../index';
+import ok from '../../index';
 
 describe('Can not use generics', () => {
   /* GOOD */

@@ -68,14 +68,17 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
   }
 
   public validate(value: Input): Result {
+    // if something is required, the only bad values should be
+    // null, undefined, empty string
     if (this.isRequired) {
-      // TODO: I don't think this is good
-      // probably just dont check at all
-      if (value === null || value === undefined || (value as any) === '')
+      if (
+        value === null ||
+        value === undefined ||
+        ((value as unknown) as string) === ''
+      )
         return this.error(this.requiredMsg);
     }
 
-    // TODO: are these assertions ok
     const parent = this.__parent as Parent;
     const root = this.__root as Root;
     for (const testFn of this.tests) {

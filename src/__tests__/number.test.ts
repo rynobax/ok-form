@@ -22,6 +22,18 @@ describe('parsing', () => {
     const result = schema.validate(null);
     expect(result.error).toBe(customMsg);
   });
+
+  it.only('handles null', () => {
+    const schema = ok.number();
+    const result = schema.validate(null);
+    expect(result.valid).toBe(true);
+  });
+
+  it.only('handles undefined', () => {
+    const schema = ok.number();
+    const result = schema.validate(undefined);
+    expect(result.valid).toBe(true);
+  });
 });
 
 describe('min', () => {

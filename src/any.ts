@@ -44,7 +44,9 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
   private isRequired = false;
   private requiredMsg = 'Required';
   protected validationMsg = 'Invalid';
-  private tests: TestFn<Input, Parent, Root>[] = [];
+
+  protected tests: TestFn<Input, Parent, Root>[] = [];
+
   protected transforms: TransformFn<Input, Parent, Root>[] = [];
 
   public __parent: Parent | undefined;
@@ -90,6 +92,7 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
   /* Call after schema is defined */
 
   public validate(input: Input): Result {
+    input = this.cast(input);
     // if something is required, the only bad values should be
     // null, undefined, empty string
     if (this.isRequired) {

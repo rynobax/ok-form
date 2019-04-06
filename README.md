@@ -4,8 +4,8 @@ minimal js object validation
 
 # Todo
 
-- [ ] cast/transform
 - [ ] refactor min/max to push fns
+- [ ] handle casting bad schema
 - [ ] array
 - [ ] path
 - [ ] boolean

@@ -116,3 +116,22 @@ describe('nested', () => {
     expect(result.valid).toBe(true);
   });
 });
+
+describe.only('required', () => {
+  const schema = ok
+    .object({
+      a: ok.number(),
+      b: ok.number(),
+    })
+    .required();
+
+  test('invalid', () => {
+    const result = schema.validate(null);
+    expect(result.valid).toBe(false);
+  });
+
+  test('valid', () => {
+    const result = schema.validate({});
+    expect(result.valid).toBe(true);
+  });
+});

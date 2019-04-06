@@ -11,63 +11,44 @@ const parseNumber = (val: unknown) => {
 };
 
 class OKNumber<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
-  private mins: { min: number; msg: string }[] = [];
-  private maxs: { max: number; msg: string }[] = [];
-  private shouldBeInt = false;
-  private shouldBeIntMsg = 'Must be an integer';
-
   public constructor(msg?: string) {
     super(msg || 'Must be a number');
     this.transform(parseNumber);
+    this.tests.push(v => {
+      if (typeof v !== 'number' || Number.isNaN(v))
+        return msg || 'Must be a number';
+      return;
+    });
   }
+
+  // If the predicate returns true, the test passes, and the value is ok
+  // if it returns false, the error message will be returned
+  private addTest = (predicate: (v: number) => boolean, msg: string) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const testFn = (val: Input) => (predicate(val as any) ? null : msg);
+    this.tests.push(testFn);
+  };
 
   public validate(input: Input) {
     // Generic validation
-    const val = super.cast(input);
-    const genericValRes = super.validate(val);
-    if (!genericValRes.valid) return genericValRes;
-
-    // Parsing
-    if (typeof val !== 'number' || Number.isNaN(val))
-      return this.error(this.validationMsg);
-
-    // min
-    for (const { min, msg } of this.mins) {
-      if (val < min) return this.error(msg);
-    }
-
-    // max
-    for (const { max, msg } of this.maxs) {
-      if (val > max) return this.error(msg);
-    }
-
-    // integer
-    if (this.shouldBeInt && !Number.isInteger(val)) {
-      return this.error(this.shouldBeIntMsg);
-    }
-
-    return this.success();
+    return super.validate(input);
   }
 
   public min(min: number, msg?: string) {
-    this.mins.push({
-      min,
-      msg: msg || `Must be greater than or equal to ${min}`,
-    });
+    this.addTest(
+      v => v >= min,
+      msg || `Must be greater than or equal to ${min}`
+    );
     return this;
   }
 
   public max(max: number, msg?: string) {
-    this.maxs.push({
-      max,
-      msg: msg || `Must be less than or equal to ${max}`,
-    });
+    this.addTest(v => v <= max, msg || `Must be less than or equal to ${max}`);
     return this;
   }
 
   public integer(msg?: string) {
-    this.shouldBeInt = true;
-    if (msg) this.shouldBeIntMsg = msg;
+    this.addTest(v => Number.isInteger(v), msg || 'Must be an integer');
     return this;
   }
 

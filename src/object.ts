@@ -18,6 +18,8 @@ class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
 
   // Returns list of shape, with child OK's populated with parent + root
   private iterateShape(input: Input) {
+    // If input in null return immediately
+    if (!input) return [];
     return Object.entries(this.shape).map(([key, ok]) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const val: any = (input as UnknownObj)[key];

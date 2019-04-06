@@ -19,8 +19,8 @@ describe('parsing', () => {
 
 test('custom message', () => {
   const customMsg = 'custom object err msg';
-  const schema = ok.object({}, customMsg);
-  const result = schema.validate(null);
+  const schema = ok.object({ a: ok.number() }, customMsg);
+  const result = schema.validate('yo');
   expect(result.error).toBe(customMsg);
 });
 

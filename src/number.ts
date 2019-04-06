@@ -18,20 +18,16 @@ class OKNumber<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
   public constructor(msg?: string) {
     super();
     this.transform(parseNumber);
-    // Will be skipped if null
     this.addTest(
       v => typeof v === 'number' && !Number.isNaN(v),
       msg || 'Must be a number'
     );
-    // this.tests.push({
-    //   testFn: v => {
-    //     if(typeof v !== 'number' && v !== null && v !== undefined)
-    //   }
-    // })
   }
 
   // If the predicate returns true, the test passes, and the value is ok
   // if it returns false, the error message will be returned
+  // These tests will be skipped if the value is null and field is marked
+  // nullable, because it doesn't make sense to apply them to a null value
   private addTest = (predicate: (v: number) => boolean, msg: string) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const testFn = (val: Input) => (predicate(val as any) ? null : msg);

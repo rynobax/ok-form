@@ -8,13 +8,32 @@ interface UnknownObj {
   [key: string]: unknown;
 }
 
+function isObject(v: unknown) {
+  return typeof v === 'object' && v !== null && !Array.isArray(v);
+}
+
 class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
   private shape: Shape<Input>;
 
   public constructor(shape: Shape<Input>, msg?: string) {
-    super(msg || 'Must be an object');
+    super();
     this.shape = shape;
+    this.addTest(isObject, msg || 'Must be an object', false);
   }
+
+  // If the predicate returns true, the test passes, and the value is ok
+  // if it returns false, the error message will be returned
+  // These tests will be skipped if the value is null and field is marked
+  // nullable, because it doesn't make sense to apply them to a null value
+  private addTest = (
+    predicate: (v: {}) => boolean,
+    msg: string,
+    skipIfNull = true
+  ) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const testFn = (val: Input) => (predicate(val as any) ? null : msg);
+    this.tests.push({ testFn, skipIfNull });
+  };
 
   // Returns list of shape, with child OK's populated with parent + root
   private iterateShape(input: Input) {
@@ -39,10 +58,6 @@ class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     const superRes = super.validate(input);
     if (!superRes.valid) return superRes;
 
-    // Parsing
-    if (typeof input !== 'object' || input === null || Array.isArray(input))
-      return this.error(this.validationMsg);
-
     // Each key
     let foundError = false;
     const error: ValidationError = {};
@@ -61,6 +76,8 @@ class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
 
   // Override cast behavior so that children get cast
   public cast(input: Input) {
+    // If we are trying to cast something that is not an object give up
+    if (!isObject(input)) return input;
     const newInput: UnknownObj = {};
     for (const { ok, val, key } of this.iterateShape(input)) {
       newInput[key] = ok.cast(val);

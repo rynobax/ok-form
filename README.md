@@ -4,7 +4,6 @@ minimal js object validation
 
 # Todo
 
-- [ ] .if? or just use if(x) return ok.validate();
 - [ ] cast/transform
 - [ ] array
 - [ ] path

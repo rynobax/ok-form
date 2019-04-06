@@ -31,7 +31,7 @@ interface TestContext<Parent, Root> {
 type TestFn<Input, Parent, Root> = (
   val: Input,
   context: TestContext<Parent, Root>
-) => string | false | null | undefined | void;
+) => OKAny | string | false | null | undefined | void;
 
 class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
   private isRequired = false;
@@ -79,8 +79,9 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
     const parent = this.__parent as Parent;
     const root = this.__root as Root;
     for (const testFn of this.tests) {
-      const msg = testFn(value, { parent, root });
-      if (msg) return this.error(msg);
+      const res = testFn(value, { parent, root });
+      if (res instanceof OKAny) return res.validate(value);
+      else if (typeof res === 'string') return this.error(res);
     }
 
     return this.success();

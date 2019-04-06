@@ -3,9 +3,10 @@ import OKNumber from './number';
 import OKObject, { Shape } from './object';
 
 const ok = {
-  any: () => new OKAny(),
-  number: (msg?: string) => new OKNumber(msg),
-  object: (obj: Shape, msg?: string) => new OKObject(obj, msg),
+  any: <InputShape = unknown>() => new OKAny<InputShape>(),
+  number: <InputShape = unknown>(msg?: string) => new OKNumber<InputShape>(msg),
+  object: <InputShape = unknown>(obj: Shape<InputShape>, msg?: string) =>
+    new OKObject<InputShape>(obj, msg),
 };
 
 export default ok;

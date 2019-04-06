@@ -10,7 +10,7 @@ const parseNumber = (val: unknown) => {
   return NaN;
 };
 
-class OKNumber extends OKAny {
+class OKNumber<InputShape = unknown> extends OKAny<InputShape> {
   private mins: { min: number; msg: string }[] = [];
   private shouldBeInt = false;
   private shouldBeIntMsg = 'Must be an integer';
@@ -19,7 +19,7 @@ class OKNumber extends OKAny {
     super(msg || 'Must be a number');
   }
 
-  public validate(input: unknown) {
+  public validate(input: InputShape) {
     // Parent validation
     const superRes = super.validate(input);
     if (!superRes.valid) return superRes;

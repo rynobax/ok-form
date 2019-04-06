@@ -1,22 +1,22 @@
 import OKAny, { ValidationError } from './any';
 
-export interface Shape {
-  [key: string]: OKAny;
+export interface Shape<InputShape> {
+  [key: string]: OKAny<InputShape>;
 }
 
 interface UnknownObj {
   [key: string]: unknown;
 }
 
-class OKNumber extends OKAny {
-  private shape: Shape;
+class OKObject<InputShape = unknown> extends OKAny<InputShape> {
+  private shape: Shape<InputShape>;
 
-  public constructor(shape: Shape, msg?: string) {
+  public constructor(shape: Shape<InputShape>, msg?: string) {
     super(msg || 'Must be an object');
     this.shape = shape;
   }
 
-  public validate(input: unknown) {
+  public validate(input: InputShape) {
     // Parent validation
     const superRes = super.validate(input);
     if (!superRes.valid) return superRes;
@@ -29,7 +29,7 @@ class OKNumber extends OKAny {
     let foundError = false;
     const error: ValidationError = {};
     for (const [key, ok] of Object.entries(this.shape)) {
-      const val = (input as UnknownObj)[key];
+      const val: any = (input as UnknownObj)[key];
 
       ok.__parent = input;
       // If this already has a root, pass in that one
@@ -48,4 +48,4 @@ class OKNumber extends OKAny {
   }
 }
 
-export default OKNumber;
+export default OKObject;

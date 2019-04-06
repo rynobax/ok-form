@@ -33,7 +33,7 @@ type TestFn = (
   context: TestContext
 ) => string | false | null | undefined | void;
 
-class OKAny {
+class OKAny<InputShape = unknown> {
   private isRequired = false;
   private requiredMsg = 'Required';
   protected validationMsg = 'Invalid';
@@ -62,16 +62,16 @@ class OKAny {
     return this;
   }
 
-  public test(testFn: TestFn): OKAny {
+  public test(testFn: TestFn): OKAny<InputShape> {
     this.tests.push(testFn);
     return this;
   }
 
-  public validate(value: unknown): Result {
+  public validate(value: InputShape): Result {
     if (this.isRequired) {
       // TODO: I don't think this is good
       // probably just dont check at all
-      if (value === null || value === undefined || value === '')
+      if (value === null || value === undefined || (value as any) === '')
         return this.error(this.requiredMsg);
     }
 

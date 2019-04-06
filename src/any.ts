@@ -49,7 +49,7 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
 
   public __parent: Parent | undefined;
   public __root: Root | undefined;
-  private getContext(): TestContext<Parent, Root> {
+  protected getContext(): TestContext<Parent, Root> {
     const parent = this.__parent as Parent;
     const root = this.__root as Root;
     return { parent, root };
@@ -89,33 +89,33 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
 
   /* Call after schema is defined */
 
-  public validate(value: Input): Result {
+  public validate(input: Input): Result {
     // if something is required, the only bad values should be
     // null, undefined, empty string
     if (this.isRequired) {
       if (
-        value === null ||
-        value === undefined ||
-        ((value as unknown) as string) === ''
+        input === null ||
+        input === undefined ||
+        ((input as unknown) as string) === ''
       )
         return this.error(this.requiredMsg);
     }
 
     const context = this.getContext();
     for (const testFn of this.tests) {
-      const res = testFn(value, context);
-      if (res instanceof OKAny) return res.validate(value);
+      const res = testFn(input, context);
+      if (res instanceof OKAny) return res.validate(input);
       else if (typeof res === 'string') return this.error(res);
     }
 
     return this.success();
   }
 
-  public cast(value: Input) {
+  public cast(input: Input) {
     const context = this.getContext();
     return this.transforms.reduce(
       (prevValue, fn) => fn(prevValue, context),
-      value
+      input
     );
   }
 }

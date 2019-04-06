@@ -18,17 +18,18 @@ class OKNumber<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
 
   public constructor(msg?: string) {
     super(msg || 'Must be a number');
+    this.transform(parseNumber);
   }
 
   public validate(input: Input) {
-    // Parent validation
-    const transformed = super.cast(input);
-    const superRes = super.validate(transformed);
-    if (!superRes.valid) return superRes;
+    // Generic validation
+    const val = super.cast(input);
+    const genericValRes = super.validate(val);
+    if (!genericValRes.valid) return genericValRes;
 
     // Parsing
-    const val = parseNumber(transformed);
-    if (Number.isNaN(val)) return this.error(this.validationMsg);
+    if (typeof val !== 'number' || Number.isNaN(val))
+      return this.error(this.validationMsg);
 
     // min
     for (const { min, msg } of this.mins) {

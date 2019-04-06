@@ -40,3 +40,19 @@ describe('object transforms', () => {
     expect(result).toEqual({ double: 10, nested: { triple: 15 } });
   });
 });
+
+describe('casting nonsense', () => {
+  test('object', () => {
+    const schema = ok.object({
+      double: ok.number().transform(v => v * 2),
+      string: ok.number(),
+    });
+    expect(() => schema.cast('lol')).toThrow('Must be an object');
+  });
+
+  test('number', () => {
+    const schema = ok.number();
+    const result = schema.cast('#$&*#&$');
+    expect(result).toEqual(NaN);
+  });
+});

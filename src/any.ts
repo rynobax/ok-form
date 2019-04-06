@@ -1,3 +1,5 @@
+import { ValidationRuntimeError } from './errors';
+
 interface ValidationErrorObject {
   [key: string]: ValidationError;
 }
@@ -7,15 +9,19 @@ export type ValidationError = string | ValidationErrorObject;
 interface ResultValid {
   valid: true;
   error: null;
+  validationError: null;
 }
 
-interface ResultInvalidPrimitive {
+interface ResultInvalidBase {
   valid: false;
+  validationError: ValidationRuntimeError;
+}
+
+interface ResultInvalidPrimitive extends ResultInvalidBase {
   error: string;
 }
 
-interface ResultInvalidObject {
-  valid: false;
+interface ResultInvalidObject extends ResultInvalidBase {
   error: ValidationErrorObject;
 }
 
@@ -69,14 +75,27 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
   // No validation message, because any excepts anything!
   public constructor() {}
 
-  protected error(msg: string): ResultInvalidPrimitive;
-  protected error(msg: ValidationErrorObject): ResultInvalidObject;
-  protected error(msg: string | ValidationErrorObject) {
-    return { valid: false, error: msg };
+  protected error(
+    msg: string,
+    validationError?: ValidationRuntimeError
+  ): ResultInvalidPrimitive;
+  protected error(
+    msg: ValidationErrorObject,
+    validationError?: ValidationRuntimeError
+  ): ResultInvalidObject;
+  protected error(
+    msg: string | ValidationErrorObject,
+    validationError?: ValidationRuntimeError
+  ) {
+    return {
+      valid: false,
+      error: msg,
+      validationError: validationError || null,
+    };
   }
 
   protected success(): ResultValid {
-    return { valid: true, error: null };
+    return { valid: true, error: null, validationError: null };
   }
 
   /**
@@ -121,24 +140,38 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
   }
 
   public validate(input: Input): Result {
-    const value = this.cast(input);
+    try {
+      const value = this.cast(input);
 
-    const isNullish = checkNullish(value);
-    if (isNullish && !this.isNullable) {
-      return this.error(this.requiredMessage);
-    }
-
-    const context = this.getContext();
-    for (const { testFn, skipIfNull } of this.tests) {
-      if (isNullish && skipIfNull) {
-        continue;
+      const isNullish = checkNullish(value);
+      if (isNullish && !this.isNullable) {
+        return this.error(this.requiredMessage);
       }
-      const res = testFn(value, context);
-      if (res instanceof OKAny) return res.validate(value);
-      else if (typeof res === 'string') return this.error(res);
-    }
 
-    return this.success();
+      const context = this.getContext();
+      for (const { testFn, skipIfNull } of this.tests) {
+        if (isNullish && skipIfNull) {
+          continue;
+        }
+        const res = testFn(value, context);
+        if (res instanceof OKAny) return res.validate(value);
+        else if (typeof res === 'string') return this.error(res);
+      }
+
+      return this.success();
+    } catch (err) {
+      // An error thrown by use (ex: impossible cast request)
+      if (err instanceof ValidationRuntimeError) {
+        return this.error(err.message, err);
+      } else {
+        // Unknown error
+        const runtimeError = new ValidationRuntimeError({
+          message: err.message,
+          originalError: err,
+        });
+        return this.error('Invalid', runtimeError);
+      }
+    }
   }
 }
 

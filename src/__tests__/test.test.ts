@@ -151,3 +151,8 @@ describe('root', () => {
     expect(result.valid).toBe(false);
   });
 });
+
+describe('tests that throws error', () => {
+  test.todo('number');
+  test.todo('object');
+});

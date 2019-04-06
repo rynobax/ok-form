@@ -9,14 +9,11 @@ required just does different message for "cant parse" vs "nullish"
 
 # Todo
 
-- [ ] refactor min/max to push fns
-- [ ] handle casting bad schema
 - [ ] array
 - [ ] path
 - [ ] boolean
 - [ ] string
 - [ ] Async
-- [ ] Support throwing error in .test?
 - [ ] Babel target browsers?
 - [ ] Search for OSS projects using joi / yup and see what validators they use
 - [ ] .compile?

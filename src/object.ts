@@ -1,4 +1,5 @@
 import OKAny, { ValidationError } from './any';
+import { ValidationRuntimeError } from './errors';
 
 export interface Shape<Input> {
   [key: string]: OKAny<Input>;
@@ -14,11 +15,13 @@ function isObject(v: unknown) {
 
 class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
   private shape: Shape<Input>;
+  private parseErrorMsg = 'Must be an object';
 
   public constructor(shape: Shape<Input>, msg?: string) {
     super();
     this.shape = shape;
-    this.addTest(isObject, msg || 'Must be an object', false);
+    if (msg) this.parseErrorMsg = msg;
+    this.addTest(isObject, this.parseErrorMsg, false);
   }
 
   // If the predicate returns true, the test passes, and the value is ok
@@ -77,7 +80,12 @@ class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
   // Override cast behavior so that children get cast
   public cast(input: Input) {
     // If we are trying to cast something that is not an object give up
-    if (!isObject(input)) return input;
+    if (!isObject(input)) {
+      throw new ValidationRuntimeError({
+        message: this.parseErrorMsg,
+        originalError: new Error(`Cannot cast ${typeof input} to object`),
+      });
+    }
     const newInput: UnknownObj = {};
     for (const { ok, val, key } of this.iterateShape(input)) {
       newInput[key] = ok.cast(val);

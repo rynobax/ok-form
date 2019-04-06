@@ -5,11 +5,13 @@ minimal js object validation
 # Todo
 
 - [ ] cast/transform
+- [ ] refactor min/max to push fns
 - [ ] array
 - [ ] path
 - [ ] boolean
 - [ ] string
 - [ ] Async
+- [ ] Support throwing error in .test?
 - [ ] Babel target browsers?
 - [ ] Search for OSS projects using joi / yup and see what validators they use
 - [ ] .compile?

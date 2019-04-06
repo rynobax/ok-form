@@ -1,4 +1,4 @@
-import OKAny from './any';
+import OKAny, { TransformFn } from './any';
 
 const parseNumber = (val: unknown) => {
   if (typeof val === 'string') {
@@ -12,6 +12,7 @@ const parseNumber = (val: unknown) => {
 
 class OKNumber<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
   private mins: { min: number; msg: string }[] = [];
+  private maxs: { max: number; msg: string }[] = [];
   private shouldBeInt = false;
   private shouldBeIntMsg = 'Must be an integer';
 
@@ -21,16 +22,22 @@ class OKNumber<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
 
   public validate(input: Input) {
     // Parent validation
-    const superRes = super.validate(input);
+    const transformed = super.cast(input);
+    const superRes = super.validate(transformed);
     if (!superRes.valid) return superRes;
 
     // Parsing
-    const val = parseNumber(input);
+    const val = parseNumber(transformed);
     if (Number.isNaN(val)) return this.error(this.validationMsg);
 
     // min
     for (const { min, msg } of this.mins) {
       if (val < min) return this.error(msg);
+    }
+
+    // max
+    for (const { max, msg } of this.maxs) {
+      if (val > max) return this.error(msg);
     }
 
     // integer
@@ -49,9 +56,22 @@ class OKNumber<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     return this;
   }
 
+  public max(max: number, msg?: string) {
+    this.maxs.push({
+      max,
+      msg: msg || `Must be less than or equal to ${max}`,
+    });
+    return this;
+  }
+
   public integer(msg?: string) {
     this.shouldBeInt = true;
     if (msg) this.shouldBeIntMsg = msg;
+    return this;
+  }
+
+  public transform(transformFn: TransformFn<Input, Parent, Root>) {
+    this.transforms.push(transformFn);
     return this;
   }
 }

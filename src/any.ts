@@ -33,14 +33,27 @@ type TestFn<Input, Parent, Root> = (
   context: TestContext<Parent, Root>
 ) => OKAny | string | false | null | undefined | void;
 
+export type TransformFn<Input, Parent, Root> = (
+  val: Input,
+  context: TestContext<Parent, Root>
+) => // eslint-disable-next-line @typescript-eslint/no-explicit-any
+any;
+
 class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
+  /* Instance keeping track of stuff */
   private isRequired = false;
   private requiredMsg = 'Required';
   protected validationMsg = 'Invalid';
   private tests: TestFn<Input, Parent, Root>[] = [];
+  protected transforms: TransformFn<Input, Parent, Root>[] = [];
 
   public __parent: Parent | undefined;
   public __root: Root | undefined;
+  private getContext(): TestContext<Parent, Root> {
+    const parent = this.__parent as Parent;
+    const root = this.__root as Root;
+    return { parent, root };
+  }
 
   public constructor(msg?: string) {
     if (msg) this.validationMsg = msg;
@@ -56,9 +69,16 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
     return { valid: true, error: null };
   }
 
+  /* Build schema */
+
   public required(msg?: string) {
     this.isRequired = true;
     if (msg) this.requiredMsg = msg;
+    return this;
+  }
+
+  public transform(transformFn: TransformFn<Input, Parent, Root>) {
+    this.transforms.push(transformFn);
     return this;
   }
 
@@ -66,6 +86,8 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
     this.tests.push(testFn);
     return this;
   }
+
+  /* Call after schema is defined */
 
   public validate(value: Input): Result {
     // if something is required, the only bad values should be
@@ -79,15 +101,22 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
         return this.error(this.requiredMsg);
     }
 
-    const parent = this.__parent as Parent;
-    const root = this.__root as Root;
+    const context = this.getContext();
     for (const testFn of this.tests) {
-      const res = testFn(value, { parent, root });
+      const res = testFn(value, context);
       if (res instanceof OKAny) return res.validate(value);
       else if (typeof res === 'string') return this.error(res);
     }
 
     return this.success();
+  }
+
+  public cast(value: Input) {
+    const context = this.getContext();
+    return this.transforms.reduce(
+      (prevValue, fn) => fn(prevValue, context),
+      value
+    );
   }
 }
 

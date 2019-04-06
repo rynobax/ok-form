@@ -19,7 +19,7 @@ describe('parsing', () => {
   it('message', () => {
     const customMsg = 'Custom validation msg';
     const schema = ok.number(customMsg);
-    const result = schema.validate(null);
+    const result = schema.validate('#^&#^');
     expect(result.error).toBe(customMsg);
   });
 

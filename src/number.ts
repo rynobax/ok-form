@@ -16,7 +16,7 @@ const parseNumber = (val: unknown) => {
 
 class OKNumber<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
   public constructor(msg?: string) {
-    super(msg || 'Must be a number');
+    super();
     this.transform(parseNumber);
     // Will be skipped if null
     this.addTest(

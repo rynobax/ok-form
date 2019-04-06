@@ -52,6 +52,7 @@ function checkNullish(value: unknown) {
 class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
   /* Instance keeping track of stuff */
   private isNullable = false;
+  private requiredMessage = 'Required';
   protected validationMsg = 'Invalid';
 
   protected tests: Test<Input, Parent, Root>[] = [];
@@ -66,8 +67,13 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
     return { parent, root };
   }
 
+  /**
+   * @param msg The error message if the field cannot be coerced
+   */
   public constructor(msg?: string) {
-    if (msg) this.validationMsg = msg;
+    if (msg) {
+      this.validationMsg = msg;
+    }
     return this;
   }
 
@@ -101,6 +107,16 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
   }
 
   /**
+   * @param msg Error message if field is empty (empty string, null, undefined)
+   */
+  public required(msg?: string) {
+    if (msg) {
+      this.requiredMessage = msg;
+    }
+    return this;
+  }
+
+  /**
    * Call after schema is defined
    */
 
@@ -117,7 +133,7 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
 
     const isNullish = checkNullish(value);
     if (isNullish && !this.isNullable) {
-      return this.error(this.validationMsg);
+      return this.error(this.requiredMessage);
     }
 
     const context = this.getContext();

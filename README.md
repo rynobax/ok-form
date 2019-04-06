@@ -5,6 +5,7 @@ minimal js object validation
 ## Notes
 
 if number is null, dont run "number" tests, but still run "any" tests
+required just does different message for "cant parse" vs "nullish"
 
 # Todo
 
@@ -20,6 +21,7 @@ if number is null, dont run "number" tests, but still run "any" tests
 - [ ] Babel target browsers?
 - [ ] Search for OSS projects using joi / yup and see what validators they use
 - [ ] .compile?
+- [ ] jsdoc comments
 - [ ] Travis CI
 - [ ] Bundlesize in CI
 - [ ] See if formik wants to suggest it (check # of issues related to yup)

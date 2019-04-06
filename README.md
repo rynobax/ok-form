@@ -2,9 +2,13 @@
 
 minimal js object validation
 
+## Notes
+
+if number is null, dont run "number" tests, but still run "any" tests
+
 # Todo
 
-- [ ] if number is null, dont run "number" tests, but still run "any" tests
+- [ ] get rid of super validation msg?
 - [ ] refactor min/max to push fns
 - [ ] handle casting bad schema
 - [ ] array

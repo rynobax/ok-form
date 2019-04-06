@@ -41,7 +41,7 @@ describe('transform order matters', () => {
   });
 });
 
-test.only('tranform can convert away null values', () => {
+test('tranform can convert away null values', () => {
   const schema = ok
     .number()
     .transform(v => (v === null ? 5 : v))

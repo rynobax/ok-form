@@ -18,11 +18,16 @@ class OKNumber<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
   public constructor(msg?: string) {
     super(msg || 'Must be a number');
     this.transform(parseNumber);
-    this.tests.push(v => {
-      if (typeof v !== 'number' || Number.isNaN(v))
-        return msg || 'Must be a number';
-      return;
-    });
+    // Will be skipped if null
+    this.addTest(
+      v => typeof v === 'number' && !Number.isNaN(v),
+      msg || 'Must be a number'
+    );
+    // this.tests.push({
+    //   testFn: v => {
+    //     if(typeof v !== 'number' && v !== null && v !== undefined)
+    //   }
+    // })
   }
 
   // If the predicate returns true, the test passes, and the value is ok
@@ -30,7 +35,7 @@ class OKNumber<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
   private addTest = (predicate: (v: number) => boolean, msg: string) => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const testFn = (val: Input) => (predicate(val as any) ? null : msg);
-    this.tests.push(testFn);
+    this.tests.push({ testFn, skipIfNull: true });
   };
 
   public min(min: number, msg?: string) {

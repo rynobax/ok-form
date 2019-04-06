@@ -33,6 +33,11 @@ type TestFn<Input, Parent, Root> = (
   context: TestContext<Parent, Root>
 ) => OKAny | string | false | null | undefined | void;
 
+interface Test<Input, Parent, Root> {
+  testFn: TestFn<Input, Parent, Root>;
+  skipIfNull?: boolean;
+}
+
 export type TransformFn<Input, Parent, Root> = (
   val: Input,
   context: TestContext<Parent, Root>
@@ -49,7 +54,7 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
   private isNullable = false;
   protected validationMsg = 'Invalid';
 
-  protected tests: TestFn<Input, Parent, Root>[] = [];
+  protected tests: Test<Input, Parent, Root>[] = [];
 
   protected transforms: TransformFn<Input, Parent, Root>[] = [];
 
@@ -91,7 +96,7 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
   }
 
   public test(testFn: TestFn<Input, Parent, Root>): OKAny<Input, Parent, Root> {
-    this.tests.push(testFn);
+    this.tests.push({ testFn });
     return this;
   }
 
@@ -111,15 +116,15 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
     const value = this.cast(input);
 
     const isNullish = checkNullish(value);
-    if (isNullish) {
-      // If the input is allowed to be nullable, then dont run the tests
-      if (this.isNullable) return this.success();
-      // If it isn't allowed to be nullable, throw an error
-      else return this.error(this.validationMsg);
+    if (isNullish && !this.isNullable) {
+      return this.error(this.validationMsg);
     }
 
     const context = this.getContext();
-    for (const testFn of this.tests) {
+    for (const { testFn, skipIfNull } of this.tests) {
+      if (isNullish && skipIfNull) {
+        continue;
+      }
       const res = testFn(value, context);
       if (res instanceof OKAny) return res.validate(value);
       else if (typeof res === 'string') return this.error(res);

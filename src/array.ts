@@ -1,16 +1,14 @@
-import OKAny, { ValidationError, Result } from './any';
-import { ValidationRuntimeError } from './errors';
-import { Shape } from './util';
+import OKAny, { Result } from './any';
 
-class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
-  private shape: Shape<Input>;
-  private parseErrorMsg = 'Must be an object';
+class OKArray<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
+  private shape: OKAny;
+  private parseErrorMsg = 'Must be an array';
 
-  public constructor(shape: Shape<Input>, msg?: string) {
+  public constructor(shape: OKAny, msg?: string) {
     super();
     this.shape = shape;
     if (msg) this.parseErrorMsg = msg;
-    this.addTest(Array.isArray, this.parseErrorMsg);
+    this.addTest(v => Array.isArray(v), this.parseErrorMsg);
   }
 
   private addTest = this.makeAddTest<unknown[]>();
@@ -21,41 +19,21 @@ class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     const superRes = super.validate(input);
     if (!superRes.valid) return superRes;
 
-    // Each key
-    let foundError = false;
-    const error: ValidationError = {};
-    for (const { ok, val, key } of this.iterateShape(input)) {
-      const res = ok.validate(val);
-      if (!res.valid) {
-        foundError = true;
-        error[key] = res.error;
-      }
-    }
+    const errors = ((input as unknown) as any[]).map(el => {
+      return this.shape.validate(el);
+    });
 
-    if (foundError) return this.error(error);
+    const foundError = errors.some(e => !e.valid);
+    // typescript cannot comprehend that they are all of the same type
+    if (foundError) return this.error(errors.map(e => e.error) as any[]);
 
     return this.success();
   }
 
-  // Override cast behavior so that children get cast
+  // Override cast behavior so that all elements get cast
   public cast(input: Input) {
-    // If we are trying to cast something that is not an object give up
-    if (!isObject(input)) {
-      throw new ValidationRuntimeError({
-        message: this.parseErrorMsg,
-        originalError: new Error(`Cannot cast ${typeof input} to object`),
-      });
-    }
-    const newInput: UnknownObj = {};
-    for (const { ok, val, key } of this.iterateShape(input)) {
-      newInput[key] = ok.cast(val);
-    }
-    const context = this.getContext();
-    return this.transforms.reduce(
-      (prevValue, fn) => fn(prevValue, context),
-      newInput as Input
-    );
+    return input;
   }
 }
 
-export default OKObject;
+export default OKArray;

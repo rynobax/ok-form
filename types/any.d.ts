@@ -1,5 +1,5 @@
 import { ValidationRuntimeError } from './errors';
-interface ValidationErrorObject {
+export interface ValidationErrorObject {
   [key: string]: ValidationError;
 }
 export declare type ValidationError = string | ValidationErrorObject;
@@ -48,6 +48,14 @@ declare class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
   ): ResultInvalidPrimitive;
   protected error(
     msg: ValidationErrorObject,
+    validationError?: ValidationRuntimeError
+  ): ResultInvalidObject;
+  protected error(
+    msg: (string | null)[],
+    validationError?: ValidationRuntimeError
+  ): ResultInvalidObject;
+  protected error(
+    msg: (ValidationErrorObject | null)[],
     validationError?: ValidationRuntimeError
   ): ResultInvalidObject;
   protected success(): ResultValid;

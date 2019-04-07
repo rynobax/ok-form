@@ -1,6 +1,6 @@
 import ok from '../index';
 
-describe.only('parsing', () => {
+describe('parsing', () => {
   const schema = ok.array(ok.number());
   test.each<[string, any, boolean]>([
     ['empty string', '   ', false],
@@ -19,12 +19,12 @@ describe.only('parsing', () => {
 
 test('custom message', () => {
   const customMsg = 'custom array err msg';
-  const schema = ok.array(ok.number());
+  const schema = ok.array(ok.number(), customMsg);
   const result = schema.validate('yo');
   expect(result.error).toBe(customMsg);
 });
 
-describe('simple', () => {
+describe('array of primitives', () => {
   const schema = ok.array(ok.number());
 
   test('invalid', () => {
@@ -35,9 +35,44 @@ describe('simple', () => {
   });
 
   test('valid', () => {
-    const result = schema.validate({
-      num: 5,
-    });
+    const result = schema.validate([5]);
     expect(result.valid).toBe(true);
+  });
+
+  test('message', () => {
+    const result = schema.validate([5, 'lsdfjlk']);
+    expect(result.error).toEqual([null, 'Must be a number']);
+  });
+});
+
+describe('array of objects', () => {
+  const schema = ok.array(
+    ok.object({
+      foo: ok.number(),
+    })
+  );
+
+  test('valid', () => {
+    const result = schema.validate([{ foo: 5 }]);
+    expect(result.valid).toBe(true);
+  });
+
+  test('invalid', () => {
+    const result = schema.validate([{ foo: 'lsdfjlk' }]);
+    expect(result.error).toEqual([{ foo: 'Must be a number' }]);
+  });
+});
+
+describe('array of arrays', () => {
+  const schema = ok.array(ok.array(ok.number()));
+
+  test('valid', () => {
+    const result = schema.validate([[5], [6]]);
+    expect(result.valid).toBe(true);
+  });
+
+  test('invalid', () => {
+    const result = schema.validate([['fdsklfj']]);
+    expect(result.error).toEqual([['Must be a number']]);
   });
 });

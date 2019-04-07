@@ -16,15 +16,12 @@ required just does different message for "cant parse" vs "nullish"
 
 ## Core
 
-- [ ] boolean
 - [ ] string
-- [ ] Babel target browsers?
-- [ ] jsdoc comments
-
-## Questionable
-
+- [ ] number methods
 - [ ] Async
 - [ ] .compile?
+- [ ] Babel target browsers?
+- [ ] jsdoc comments
 
 ## Util
 

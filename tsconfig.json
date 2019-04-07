@@ -13,7 +13,6 @@
     "noUnusedParameters": true,
     "strict": true,
     "outDir": "types",
-    "emitDeclarationOnly": true,
     "stripInternal": true
   },
   "include": ["src/**/*"],

@@ -36,10 +36,11 @@ class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
   private setContext(input: Input) {
     // If input in null return immediately
     if (!input) return;
-    Object.values(this.shape).forEach(ok => {
+    Object.entries(this.shape).forEach(([key, ok]) => {
       ok.__parent = (input as unknown) as Parent;
       // If this already has a root, pass in that one
       ok.__root = this.__root || ((input as unknown) as Root);
+      ok.__path = this.__path.concat(key);
     });
   }
 

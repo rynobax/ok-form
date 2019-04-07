@@ -170,7 +170,51 @@ describe('root', () => {
   });
 });
 
-describe('tests that throws error', () => {
-  test.todo('number');
-  test.todo('object');
+describe('path', () => {
+  // expect is broken inside cbs because expect error gets caught
+  test('simple', () => {
+    let p;
+    ok.number()
+      .test((v, { path }) => {
+        p = path;
+      })
+      .validate(5);
+    expect(p).toEqual([]);
+  });
+
+  test('object', () => {
+    let p;
+    ok.object({
+      foo: ok.number().test((v, { path }) => {
+        p = path;
+      }),
+    }).validate({ foo: 5 });
+    expect(p).toEqual(['foo']);
+  });
+
+  test('array', () => {
+    let p;
+    ok.array(
+      ok.number().test((v, { path }) => {
+        if (v === 2) p = path;
+      })
+    ).validate([0, 1, 2]);
+    expect(p).toEqual(['2']);
+  });
+
+  test('complex', () => {
+    let p;
+    ok.array(
+      ok.object({
+        foo: ok.object({
+          bar: ok.array(
+            ok.number().test((v, { path }) => {
+              p = path;
+            })
+          ),
+        }),
+      })
+    ).validate([{ foo: { bar: [1] } }]);
+    expect(p).toEqual(['0', 'foo', 'bar', '0']);
+  });
 });

@@ -32,6 +32,7 @@ export type Result = ResultValid | ResultInvalid;
 interface TestContext<Parent, Root> {
   parent: Parent;
   root: Root;
+  path: string[];
 }
 
 type TestFn<Input, Parent, Root> = (
@@ -113,7 +114,8 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
   protected getContext(): TestContext<Parent, Root> {
     const parent = this.__parent as Parent;
     const root = this.__root as Root;
-    return { parent, root };
+    const path = this.__path;
+    return { parent, root, path };
   }
 
   // If the predicate returns true, the test passes, and the value is ok

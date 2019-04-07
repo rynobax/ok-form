@@ -23,6 +23,7 @@ export declare type Result = ResultValid | ResultInvalid;
 interface TestContext<Parent, Root> {
   parent: Parent;
   root: Root;
+  path: string[];
 }
 declare type TestFn<Input, Parent, Root> = (
   val: Input,

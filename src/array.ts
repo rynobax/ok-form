@@ -14,24 +14,24 @@ class OKArray<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
 
   private addTest = this.makeAddTest<unknown[]>();
 
-  private setContext(input: Input) {
+  private setContext(input: Input, ndx: number) {
     // If input in null return immediately
     if (!input) return;
     this.shape.__parent = (input as unknown) as Parent;
     // If this already has a root, pass in that one
     this.shape.__root = this.__root || ((input as unknown) as Root);
+    this.shape.__path = this.__path.concat(String(ndx));
   }
 
   /* Call after schema is defined */
 
   public validate(input: Input): Result {
-    this.setContext(input);
-
     // Generic validation
     const superRes = super.validate(input);
     if (!superRes.valid) return superRes;
 
-    const errors = ((input as unknown) as any[]).map(el => {
+    const errors = ((input as unknown) as any[]).map((el, ndx) => {
+      this.setContext(input, ndx);
       return this.shape.validate(el);
     });
 

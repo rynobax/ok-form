@@ -39,6 +39,26 @@ class OKNumber<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     return this;
   }
 
+  public lessThan(x: number, msg?: string) {
+    this.addTest(v => v < x, msg || `Must be less than ${x}`);
+    return this;
+  }
+
+  public moreThan(x: number, msg?: string) {
+    this.addTest(v => v > x, msg || `Must be greater than ${x}`);
+    return this;
+  }
+
+  public positive(msg?: string) {
+    this.addTest(v => v > 0, msg || `Must be positive`);
+    return this;
+  }
+
+  public negative(msg?: string) {
+    this.addTest(v => v < 0, msg || `Must be negative`);
+    return this;
+  }
+
   public integer(msg?: string) {
     this.addTest(v => Number.isInteger(v), msg || 'Must be an integer');
     return this;

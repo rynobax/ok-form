@@ -16,9 +16,8 @@ required just does different message for "cant parse" vs "nullish"
 
 ## Core
 
-- [ ] number methods
 - [ ] Async
-- [ ] .compile?
+- [ ] Real world tests
 - [ ] Babel target browsers?
 - [ ] jsdoc comments
 

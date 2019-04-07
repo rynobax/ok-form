@@ -16,7 +16,6 @@ required just does different message for "cant parse" vs "nullish"
 
 ## Core
 
-- [ ] Async
 - [ ] Real world tests
 - [ ] Babel target browsers?
 - [ ] jsdoc comments

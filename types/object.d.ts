@@ -6,6 +6,7 @@ declare class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
   constructor(shape: Shape<Input>, msg?: string);
   private addTest;
   private iterateShape;
+  private setContext;
   validate(input: Input): Result;
   cast(input: Input): Input;
 }

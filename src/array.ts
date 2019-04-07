@@ -13,9 +13,20 @@ class OKArray<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
   }
 
   private addTest = this.makeAddTest<unknown[]>();
+
+  private setContext(input: Input) {
+    // If input in null return immediately
+    if (!input) return;
+    this.shape.__parent = (input as unknown) as Parent;
+    // If this already has a root, pass in that one
+    this.shape.__root = this.__root || ((input as unknown) as Root);
+  }
+
   /* Call after schema is defined */
 
   public validate(input: Input): Result {
+    this.setContext(input);
+
     // Generic validation
     const superRes = super.validate(input);
     if (!superRes.valid) return superRes;

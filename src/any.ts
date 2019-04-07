@@ -67,6 +67,8 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
   public __parent: Parent | undefined;
   // @internal
   public __root: Root | undefined;
+  // @internal
+  public __path: string[] = [];
 
   // No validation message, because any excepts anything!
   public constructor() {}

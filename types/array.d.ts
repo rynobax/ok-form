@@ -4,6 +4,7 @@ declare class OKArray<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
   private parseErrorMsg;
   constructor(shape: OKAny, msg?: string);
   private addTest;
+  private setContext;
   validate(input: Input): Result;
   cast(input: Input): Input;
 }

@@ -113,6 +113,24 @@ describe('parent deeply nested', () => {
   });
 });
 
+describe('parent array', () => {
+  const schema = ok.array(
+    ok.number().test((v, { parent }) => {
+      if (parent.every(e => e === v)) return 'one must be different';
+    })
+  );
+
+  test('valid', () => {
+    const result = schema.validate([1, 2, 3]);
+    expect(result.valid).toBe(true);
+  });
+
+  test('invalid', () => {
+    const result = schema.validate([1, 1, 1]);
+    expect(result.valid).toBe(false);
+  });
+});
+
 describe('root', () => {
   const schema = ok.object({
     foo: ok.number(),

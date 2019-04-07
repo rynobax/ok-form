@@ -29,18 +29,25 @@ class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     if (!input) return [];
     return Object.entries(this.shape).map(([key, ok]) => {
       const val: any = (input as UnknownObj)[key];
+      return { ok, val, key };
+    });
+  }
 
+  private setContext(input: Input) {
+    // If input in null return immediately
+    if (!input) return;
+    Object.values(this.shape).forEach(ok => {
       ok.__parent = (input as unknown) as Parent;
       // If this already has a root, pass in that one
       ok.__root = this.__root || ((input as unknown) as Root);
-
-      return { ok, val, key };
     });
   }
 
   /* Call after schema is defined */
 
   public validate(input: Input): Result {
+    this.setContext(input);
+
     // Generic validation
     const superRes = super.validate(input);
     if (!superRes.valid) return superRes;

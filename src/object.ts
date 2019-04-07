@@ -1,4 +1,4 @@
-import OKAny, { ValidationError } from './any';
+import OKAny, { ValidationError, Result } from './any';
 import { ValidationRuntimeError } from './errors';
 
 export interface Shape<Input> {
@@ -56,7 +56,7 @@ class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
 
   /* Call after schema is defined */
 
-  public validate(input: Input) {
+  public validate(input: Input): Result {
     // Parent validation
     const superRes = super.validate(input);
     if (!superRes.valid) return superRes;

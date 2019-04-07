@@ -27,7 +27,7 @@ interface ResultInvalidObject extends ResultInvalidBase {
 
 type ResultInvalid = ResultInvalidPrimitive | ResultInvalidObject;
 
-type Result = ResultValid | ResultInvalid;
+export type Result = ResultValid | ResultInvalid;
 
 interface TestContext<Parent, Root> {
   parent: Parent;
@@ -64,8 +64,11 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
 
   protected transforms: TransformFn<Input, Parent, Root>[] = [];
 
+  // @internal
   public __parent: Parent | undefined;
+  // @internal
   public __root: Root | undefined;
+
   protected getContext(): TestContext<Parent, Root> {
     const parent = this.__parent as Parent;
     const root = this.__root as Root;

@@ -4,6 +4,8 @@
   "description": "",
   "author": "Ryan Baxley",
   "license": "MIT",
+  "main": "./lib/index.js",
+  "types": "./types/index.d.ts",
   "scripts": {
     "clean": "rimraf lib/*",
     "build": "babel ./src -o ./lib/index.js --ignore=**/__tests__/* --extensions .ts",

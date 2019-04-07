@@ -4,16 +4,18 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "alwaysStrict": true,
-    "sourceMap": true,
+    "sourceMap": false,
+    "declaration": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "strict": true,
-    "incremental": true,
-    "outDir": "tsBuild"
+    "outDir": "types",
+    "emitDeclarationOnly": true,
+    "stripInternal": true
   },
   "include": ["src/**/*"],
-  "exclude": ["src/__tests__/generics"]
+  "exclude": ["**/__tests__"]
 }

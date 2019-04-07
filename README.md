@@ -2,6 +2,11 @@
 
 minimal js object validation
 
+## Keywords
+
+simple, predictable
+minimal
+
 ## Notes
 
 if number is null, dont run "number" tests, but still run "any" tests

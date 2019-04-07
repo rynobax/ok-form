@@ -35,10 +35,21 @@ interface TestContext<Parent, Root> {
   path: string[];
 }
 
-type TestFn<Input, Parent, Root> = (
+type TestFnResult = OKAny | string | false | null | undefined | void;
+
+type SyncTestFn<Input, Parent, Root> = (
   val: Input,
   context: TestContext<Parent, Root>
-) => OKAny | string | false | null | undefined | void;
+) => TestFnResult;
+
+type AsyncTestFn<Input, Parent, Root> = (
+  val: Input,
+  context: TestContext<Parent, Root>
+) => Promise<TestFnResult>;
+
+type TestFn<Input, Parent, Root> =
+  | SyncTestFn<Input, Parent, Root>
+  | AsyncTestFn<Input, Parent, Root>;
 
 interface Test<Input, Parent, Root> {
   testFn: TestFn<Input, Parent, Root>;
@@ -53,6 +64,10 @@ export type TransformFn<Input, Parent, Root> = (
 function checkNullish(value: unknown) {
   // null, undefined, empty string all considered nullish
   return value === null || value === undefined || (value as string) === '';
+}
+
+function isString(val: any): val is string {
+  return typeof val === 'string';
 }
 
 class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
@@ -171,6 +186,27 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
     );
   }
 
+  private handleValidationError(err: any) {
+    // An error thrown by use (ex: impossible cast request)
+    if (err instanceof ValidationRuntimeError) {
+      return this.error(err.message, err);
+    } else if (err && err.message) {
+      // Unknown error
+      const runtimeError = new ValidationRuntimeError({
+        message: err.message,
+        originalError: err,
+      });
+      return this.error('Invalid', runtimeError);
+    } else {
+      // Non error was thrown
+      const runtimeError = new ValidationRuntimeError({
+        message: 'Error',
+        originalError: err,
+      });
+      return this.error('Invalid', runtimeError);
+    }
+  }
+
   public validate(input: Input): Result {
     try {
       const value = this.cast(input);
@@ -186,23 +222,47 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
           continue;
         }
         const res = testFn(value, context);
-        if (res instanceof OKAny) return res.validate(value);
-        else if (typeof res === 'string') return this.error(res);
+        if (res instanceof Promise)
+          return this.error(
+            'Cannot run async test in validate, use validateAsync'
+          );
+        else if (res instanceof OKAny) return res.validate(value);
+        else if (isString(res)) return this.error(res);
       }
 
       return this.success();
     } catch (err) {
-      // An error thrown by use (ex: impossible cast request)
-      if (err instanceof ValidationRuntimeError) {
-        return this.error(err.message, err);
-      } else {
-        // Unknown error
-        const runtimeError = new ValidationRuntimeError({
-          message: err.message,
-          originalError: err,
-        });
-        return this.error('Invalid', runtimeError);
+      return this.handleValidationError(err);
+    }
+  }
+
+  public async validateAsync(input: Input): Promise<Result> {
+    try {
+      const value = this.cast(input);
+
+      const isNullish = checkNullish(value);
+      if (isNullish && !this.isNullable) {
+        return this.error(this.requiredMessage);
       }
+
+      const context = this.getContext();
+      const testResults = await Promise.all(
+        this.tests.map(async ({ testFn, skipIfNull }) => {
+          if (isNullish && skipIfNull) {
+            return null;
+          }
+          const res = await testFn(value, context);
+          if (res instanceof OKAny)
+            return res.validateAsync(value).then(r => r.error);
+          else if (isString(res)) return res;
+          else return null;
+        })
+      );
+      const firstError = testResults.filter(isString)[0];
+      if (firstError) return this.error(firstError);
+      else return this.success();
+    } catch (err) {
+      return this.handleValidationError(err);
     }
   }
 }

@@ -72,6 +72,31 @@ class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     return this.success();
   }
 
+  public async validateAsync(input: Input): Promise<Result> {
+    this.setContext(input);
+
+    // Generic validation
+    const superRes = await super.validateAsync(input);
+    if (!superRes.valid) return superRes;
+
+    // Each key
+    let foundError = false;
+    const error: ValidationError = {};
+    await Promise.all(
+      this.iterateShape(input).map(async ({ ok, val, key }) => {
+        const res = await ok.validateAsync(val);
+        if (!res.valid) {
+          foundError = true;
+          error[key] = res.error;
+        }
+      })
+    );
+
+    if (foundError) return this.error(error);
+
+    return this.success();
+  }
+
   // Override cast behavior so that children get cast
   public cast(input: Input) {
     // If we are trying to cast something that is not an object give up

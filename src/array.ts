@@ -42,6 +42,25 @@ class OKArray<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     return this.success();
   }
 
+  public async validateAsync(input: Input): Promise<Result> {
+    // Generic validation
+    const superRes = await super.validateAsync(input);
+    if (!superRes.valid) return superRes;
+
+    const errors = await Promise.all(
+      ((input as unknown) as any[]).map((el, ndx) => {
+        this.setContext(input, ndx);
+        return this.shape.validateAsync(el);
+      })
+    );
+
+    const foundError = errors.some(e => !e.valid);
+    // typescript cannot comprehend that they are all of the same type
+    if (foundError) return this.error(errors.map(e => e.error) as any[]);
+
+    return this.success();
+  }
+
   // Override cast behavior so that all elements get cast
   public cast(input: Input) {
     // If we are trying to cast something that is not an array give up

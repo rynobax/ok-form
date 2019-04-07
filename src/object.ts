@@ -1,6 +1,9 @@
 import OKAny, { ValidationError, Result } from './any';
 import { ValidationRuntimeError } from './errors';
-import { Shape } from './util';
+
+export interface Shape<Input> {
+  [key: string]: OKAny<Input>;
+}
 
 interface UnknownObj {
   [key: string]: unknown;

@@ -1,5 +1,7 @@
 import OKAny, { Result } from './any';
-import { Shape } from './util';
+export interface Shape<Input> {
+  [key: string]: OKAny<Input>;
+}
 declare class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
   private shape;
   private parseErrorMsg;

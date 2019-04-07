@@ -8,13 +8,16 @@
   "types": "./types/index.d.ts",
   "scripts": {
     "clean": "rimraf lib/*",
-    "build": "babel ./src -o ./lib/index.js --ignore=**/__tests__/* --extensions .ts && tsc --emitDeclarationOnly",
+    "build": "yarn run build:src && yarn run build:types",
+    "build:src": "babel ./src -o ./lib/index.js --ignore=**/__tests__/* --extensions .ts -s",
+    "build:types": "tsc --emitDeclarationOnly",
     "release": "yarn run clean && yarn run build",
     "typecheck": "tsc -w --noEmit",
     "lint": "eslint src/**/*.ts --max-warnings=0",
     "test": "jest",
     "test:watch": "jest --watch",
-    "size": "bundlesize"
+    "size": "bundlesize",
+    "explore": "source-map-explorer lib/index.js"
   },
   "dependencies": {},
   "devDependencies": {
@@ -36,6 +39,7 @@
     "lint-staged": "^8.1.5",
     "prettier": "1.16.4",
     "rimraf": "^2.6.3",
+    "source-map-explorer": "^1.8.0",
     "typescript": "^3.4.1"
   },
   "husky": {
@@ -44,7 +48,7 @@
     }
   },
   "lint-staged": {
-    "*.{js,ts,json,md}": [
+    "*.{ts,json,md}": [
       "prettier --write",
       "git add"
     ]

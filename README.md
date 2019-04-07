@@ -16,7 +16,6 @@ required just does different message for "cant parse" vs "nullish"
 
 ## Core
 
-- [ ] string
 - [ ] number methods
 - [ ] Async
 - [ ] .compile?

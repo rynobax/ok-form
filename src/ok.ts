@@ -1,9 +1,9 @@
-import { Shape } from './util';
 import OKAny from './any';
 import OKArray from './array';
 import OKBoolean from './boolean';
 import OKNumber from './number';
-import OKObject from './object';
+import OKObject, { Shape } from './object';
+import OKString from './string';
 
 const ok = {
   any: <Input = any, Parent = any, Root = any>() =>
@@ -18,6 +18,8 @@ const ok = {
     shape: Shape<Input>,
     msg?: string
   ) => new OKObject<Input, Parent, Root>(shape, msg),
+  string: <Input = any, Parent = any, Root = any>(msg?: string) =>
+    new OKString<Input, Parent, Root>(msg),
 };
 
 export default ok;

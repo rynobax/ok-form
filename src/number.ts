@@ -24,15 +24,7 @@ class OKNumber<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     );
   }
 
-  // If the predicate returns true, the test passes, and the value is ok
-  // if it returns false, the error message will be returned
-  // These tests will be skipped if the value is null and field is marked
-  // nullable, because it doesn't make sense to apply them to a null value
-  private addTest = (predicate: (v: number) => boolean, msg: string) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const testFn = (val: Input) => (predicate(val as any) ? null : msg);
-    this.tests.push({ testFn, skipIfNull: true });
-  };
+  private addTest = this.makeAddTest<number>();
 
   public min(min: number, msg?: string) {
     this.addTest(

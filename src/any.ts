@@ -69,14 +69,10 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
   // @internal
   public __root: Root | undefined;
 
-  protected getContext(): TestContext<Parent, Root> {
-    const parent = this.__parent as Parent;
-    const root = this.__root as Root;
-    return { parent, root };
-  }
-
   // No validation message, because any excepts anything!
   public constructor() {}
+
+  /* Internal */
 
   protected error(
     msg: string,
@@ -100,6 +96,25 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
   protected success(): ResultValid {
     return { valid: true, error: null, validationError: null };
   }
+
+  protected getContext(): TestContext<Parent, Root> {
+    const parent = this.__parent as Parent;
+    const root = this.__root as Root;
+    return { parent, root };
+  }
+
+  // If the predicate returns true, the test passes, and the value is ok
+  // if it returns false, the error message will be returned
+  // These tests will be skipped if the value is null and field is marked
+  // nullable, because it doesn't make sense to apply them to a null value
+  protected makeAddTest = <T = unknown>() => (
+    predicate: (v: T) => boolean,
+    msg: string
+  ) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const testFn = (val: Input) => (predicate(val as any) ? null : msg);
+    this.tests.push({ testFn, skipIfNull: true });
+  };
 
   /**
    * Build schema

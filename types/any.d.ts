@@ -41,7 +41,6 @@ declare class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
   private requiredMessage;
   protected tests: Test<Input, Parent, Root>[];
   protected transforms: TransformFn<Input, Parent, Root>[];
-  protected getContext(): TestContext<Parent, Root>;
   constructor();
   protected error(
     msg: string,
@@ -52,6 +51,11 @@ declare class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
     validationError?: ValidationRuntimeError
   ): ResultInvalidObject;
   protected success(): ResultValid;
+  protected getContext(): TestContext<Parent, Root>;
+  protected makeAddTest: <T = unknown>() => (
+    predicate: (v: T) => boolean,
+    msg: string
+  ) => void;
   /**
    * Build schema
    */

@@ -2,14 +2,6 @@ import OKAny, { ValidationError, Result } from './any';
 import { ValidationRuntimeError } from './errors';
 import { Shape } from './util';
 
-interface UnknownObj {
-  [key: string]: unknown;
-}
-
-function isObject(v: unknown) {
-  return typeof v === 'object' && v !== null && !Array.isArray(v);
-}
-
 class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
   private shape: Shape<Input>;
   private parseErrorMsg = 'Must be an object';
@@ -18,27 +10,10 @@ class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     super();
     this.shape = shape;
     if (msg) this.parseErrorMsg = msg;
-    this.addTest(isObject, this.parseErrorMsg);
+    this.addTest(Array.isArray, this.parseErrorMsg);
   }
 
-  private addTest = this.makeAddTest<{}>();
-
-  // Returns list of shape, with child OK's populated with parent + root
-  private iterateShape(input: Input) {
-    // If input in null return immediately
-    if (!input) return [];
-    return Object.entries(this.shape).map(([key, ok]) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const val: any = (input as UnknownObj)[key];
-
-      ok.__parent = (input as unknown) as Parent;
-      // If this already has a root, pass in that one
-      ok.__root = this.__root || ((input as unknown) as Root);
-
-      return { ok, val, key };
-    });
-  }
-
+  private addTest = this.makeAddTest<unknown[]>();
   /* Call after schema is defined */
 
   public validate(input: Input): Result {

@@ -1,5 +1,7 @@
 import ok from '../index';
 
+const customMsg = 'custom array err msg';
+
 describe('parsing', () => {
   const schema = ok.array(ok.number());
   test.each<[string, any, boolean]>([
@@ -18,7 +20,6 @@ describe('parsing', () => {
 });
 
 test('custom message', () => {
-  const customMsg = 'custom array err msg';
   const schema = ok.array(ok.number(), customMsg);
   const result = schema.validate('yo');
   expect(result.error).toBe(customMsg);
@@ -81,4 +82,71 @@ test('cast', () => {
   const schema = ok.array(ok.number());
   const result = schema.cast([5, '6']);
   expect(result).toEqual([5, 6]);
+});
+
+describe('length', () => {
+  const schema = ok.array(ok.number()).length(3, customMsg);
+
+  test('valid', () => {
+    const result = schema.validate([5, 5, 5]);
+    expect(result.valid).toBe(true);
+  });
+
+  test('invalid', () => {
+    const result = schema.validate([5]);
+    expect(result.valid).toBe(false);
+  });
+
+  test('message', () => {
+    const result = schema.validate([5]);
+    expect(result.error).toEqual(customMsg);
+  });
+});
+
+describe('min', () => {
+  const schema = ok.array(ok.number()).min(3, customMsg);
+
+  test('valid', () => {
+    const result = schema.validate([5, 5, 5, 5]);
+    expect(result.valid).toBe(true);
+  });
+
+  test('inclusive', () => {
+    const result = schema.validate([5, 5, 5]);
+    expect(result.valid).toBe(true);
+  });
+
+  test('invalid', () => {
+    const result = schema.validate([5]);
+    expect(result.valid).toBe(false);
+  });
+
+  test('message', () => {
+    const result = schema.validate([5]);
+    expect(result.error).toEqual(customMsg);
+  });
+});
+
+describe('max', () => {
+  const schema = ok.array(ok.number()).max(3, customMsg);
+
+  test('valid', () => {
+    const result = schema.validate([5, 5]);
+    expect(result.valid).toBe(true);
+  });
+
+  test('inclusive', () => {
+    const result = schema.validate([5, 5, 5]);
+    expect(result.valid).toBe(true);
+  });
+
+  test('invalid', () => {
+    const result = schema.validate([5, 5, 5, 5]);
+    expect(result.valid).toBe(false);
+  });
+
+  test('message', () => {
+    const result = schema.validate([5, 5, 5, 5]);
+    expect(result.error).toEqual(customMsg);
+  });
 });

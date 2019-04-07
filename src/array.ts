@@ -72,6 +72,27 @@ class OKArray<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     }
     return (input.map(el => this.shape.cast(el)) as unknown) as Input;
   }
+
+  public length(len: number, msg?: string) {
+    this.addTest(v => v.length === len, msg || `Must have length ${len}`);
+    return this;
+  }
+
+  public min(min: number, msg?: string) {
+    this.addTest(
+      v => v.length >= min,
+      msg || `Must have length greater than or equal to ${min}`
+    );
+    return this;
+  }
+
+  public max(max: number, msg?: string) {
+    this.addTest(
+      v => v.length <= max,
+      msg || `Must have length less than or equal to ${max}`
+    );
+    return this;
+  }
 }
 
 export default OKArray;

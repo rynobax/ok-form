@@ -11,12 +11,12 @@ minimal
 
 if number is null, dont run "number" tests, but still run "any" tests
 required just does different message for "cant parse" vs "nullish"
+note about required vs constructor
 
 # Todo
 
 ## Core
 
-- [ ] Real world tests
 - [ ] Babel target browsers?
 - [ ] jsdoc comments
 

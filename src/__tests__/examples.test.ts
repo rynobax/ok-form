@@ -83,13 +83,12 @@ describe('residents', () => {
     building: ok.string(),
     residents: ok.array(
       ok.object({
-        name: ok.string(),
+        name: ok.string().required('Name is required!'),
         age: ok.number().test((age, { path, root }) => {
           const ndx = Number(path[1]);
-          const prev = root.residents[ndx - 1];
-          if (prev && prev.age > age) return 'Younger';
-          const next = root.residents[ndx + 1];
-          if (next && next.age < age) return 'Older';
+          const isLast = root.residents.length - 1 === ndx;
+          const isOldest = root.residents.every(r => r.age <= age);
+          if (isLast && !isOldest) return 'Last resident must be the oldest!';
         }),
       })
     ),
@@ -97,7 +96,7 @@ describe('residents', () => {
 
   test('valid', async () => {
     const result = await schema.validate({
-      buildingName: 'Apt A',
+      building: 'Apt A',
       residents: [
         { name: 'Alice', age: 12 },
         { name: 'Bob', age: 15 },
@@ -110,16 +109,20 @@ describe('residents', () => {
 
   test('invalid', async () => {
     const result = await schema.validate({
-      buildingName: 'Apt A',
+      building: 'Apt A',
       residents: [
-        { name: 'Alice', age: 12 },
+        { name: '', age: 12 },
         { name: 'Claire', age: 32 },
         { name: 'Bob', age: 15 },
       ],
     });
     expect(result.valid).toBe(false);
     expect(result.error).toEqual({
-      username: 'Username already in use',
+      residents: [
+        { name: 'Name is required!' },
+        null,
+        { age: 'Last resident must be the oldest!' },
+      ],
     });
   });
 });

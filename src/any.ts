@@ -47,8 +47,7 @@ interface Test<Input, Parent, Root> {
 export type TransformFn<Input, Parent, Root> = (
   val: Input,
   context: TestContext<Parent, Root>
-) => // eslint-disable-next-line @typescript-eslint/no-explicit-any
-any;
+) => any;
 
 function checkNullish(value: unknown) {
   // null, undefined, empty string all considered nullish
@@ -123,7 +122,6 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
     predicate: (v: T) => boolean,
     msg: string
   ) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const testFn = (val: Input) => (predicate(val as any) ? null : msg);
     this.tests.push({ testFn, skipIfNull: true });
   };

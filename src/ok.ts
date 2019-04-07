@@ -4,7 +4,6 @@ import OKNumber from './number';
 import OKObject from './object';
 import OKArray from './array';
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
 const ok = {
   any: <Input = any, Parent = any, Root = any>() =>
     new OKAny<Input, Parent, Root>(),

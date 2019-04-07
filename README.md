@@ -14,17 +14,29 @@ required just does different message for "cant parse" vs "nullish"
 
 # Todo
 
+## Core
+
 - [ ] array
 - [ ] path
 - [ ] boolean
 - [ ] string
-- [ ] Async
 - [ ] Babel target browsers?
-- [ ] Search for OSS projects using joi / yup and see what validators they use
-- [ ] .compile?
 - [ ] jsdoc comments
+
+## Questionable
+
+- [ ] Async
+- [ ] .compile?
+
+## Util
+
 - [ ] Travis CI
 - [ ] Bundlesize in CI
+
+## Branding
+
+- [ ] Nice readme
+- [ ] Search for OSS projects using joi / yup and see what validators they use
 - [ ] See if formik wants to suggest it (check # of issues related to yup)
   - Want to help others, not just promote my stuff
 

@@ -76,3 +76,9 @@ describe('array of arrays', () => {
     expect(result.error).toEqual([['Must be a number']]);
   });
 });
+
+test('cast', () => {
+  const schema = ok.array(ok.number());
+  const result = schema.cast([5, '6']);
+  expect(result).toEqual([5, 6]);
+});

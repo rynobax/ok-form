@@ -68,7 +68,7 @@ declare class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
   /**
    * Build schema
    */
-  nullable(): this;
+  optional(): this;
   transform(transformFn: TransformFn<Input, Parent, Root>): this;
   test(testFn: TestFn<Input, Parent, Root>): OKAny<Input, Parent, Root>;
   /**

@@ -1,7 +1,7 @@
 import ok from '../index';
 
 describe('any', () => {
-  describe('nonNullable by default', () => {
+  describe('not optional by default', () => {
     const customMsg = 'This field is required!!!';
     const schema = ok.any().required(customMsg);
 
@@ -26,8 +26,8 @@ describe('any', () => {
     });
   });
 
-  describe('nullable', () => {
-    const schema = ok.any().nullable();
+  describe('optional', () => {
+    const schema = ok.any().optional();
 
     test('null', () => {
       const result = schema.validate(null);

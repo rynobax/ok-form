@@ -72,7 +72,7 @@ function isString(val: any): val is string {
 
 class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
   /* Instance keeping track of stuff */
-  private isNullable = false;
+  private isOptional = false;
   private requiredMessage = 'Required';
 
   protected tests: Test<Input, Parent, Root>[] = [];
@@ -136,7 +136,7 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
   // If the predicate returns true, the test passes, and the value is ok
   // if it returns false, the error message will be returned
   // These tests will be skipped if the value is null and field is marked
-  // nullable, because it doesn't make sense to apply them to a null value
+  // optional, because it doesn't make sense to apply them to a null value
   protected makeAddTest = <T = unknown>() => (
     predicate: (v: T) => boolean,
     msg: string
@@ -149,8 +149,8 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
    * Build schema
    */
 
-  public nullable() {
-    this.isNullable = true;
+  public optional() {
+    this.isOptional = true;
     return this;
   }
 
@@ -212,7 +212,7 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
       const value = this.cast(input);
 
       const isNullish = checkNullish(value);
-      if (isNullish && !this.isNullable) {
+      if (isNullish && !this.isOptional) {
         return this.error(this.requiredMessage);
       }
 
@@ -241,7 +241,7 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
       const value = this.cast(input);
 
       const isNullish = checkNullish(value);
-      if (isNullish && !this.isNullable) {
+      if (isNullish && !this.isOptional) {
         return this.error(this.requiredMessage);
       }
 

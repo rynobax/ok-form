@@ -131,10 +131,10 @@ describe('required', () => {
   });
 });
 
-describe('nullable keys', () => {
+describe('optional keys', () => {
   const schema = ok.object({
-    a: ok.number().nullable(),
-    b: ok.number().nullable(),
+    a: ok.number().optional(),
+    b: ok.number().optional(),
   });
 
   test('null valid', () => {

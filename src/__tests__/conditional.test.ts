@@ -4,11 +4,11 @@ describe('just use test', () => {
   const schema = ok.object({
     a: ok
       .number()
-      .nullable()
+      .optional()
       .test((_, { parent }) => (parent.b ? ok.number() : null)),
     b: ok
       .number()
-      .nullable()
+      .optional()
       .test((_, { parent }) => parent.a && ok.number()),
   });
 

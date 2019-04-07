@@ -24,8 +24,8 @@ describe('parsing', () => {
     expect(result.error).toBe(customMsg);
   });
 
-  describe('nullable', () => {
-    const schema = ok.number().nullable();
+  describe('optional', () => {
+    const schema = ok.number().optional();
     it('valid', () => {
       const result = schema.validate(null);
       expect(result.valid).toBe(true);

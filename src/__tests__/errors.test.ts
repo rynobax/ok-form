@@ -23,7 +23,7 @@ test('casting string to object', () => {
 test('.test that throws', () => {
   const schema = ok
     .number()
-    .nullable()
+    .optional()
     .test(v => {
       return v.foo;
     });

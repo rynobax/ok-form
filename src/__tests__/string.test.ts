@@ -23,15 +23,15 @@ describe('parsing', () => {
     expect(result.error).toBe(customMsg);
   });
 
-  describe('nullable', () => {
+  describe('optional', () => {
     it('valid', () => {
-      const schema = ok.string().nullable();
+      const schema = ok.string().optional();
       const result = schema.validate(null);
       expect(result.valid).toBe(true);
     });
 
     it('casting', () => {
-      const schema = ok.string().nullable();
+      const schema = ok.string().optional();
       const result = schema.cast(null);
       expect(result).toBe(null);
     });

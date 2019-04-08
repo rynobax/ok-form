@@ -5,6 +5,11 @@ class OKArray<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
   private shape: OKAny;
   private parseErrorMsg = 'Must be an array';
 
+  /**
+   * Create an array schema, which will only accept an array
+   * @param shape A schema for the elements of the array
+   * @param msg The error message if the schema is not passed an array
+   */
   public constructor(shape: OKAny, msg?: string) {
     super();
     this.shape = shape;
@@ -22,8 +27,6 @@ class OKArray<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     this.shape.__root = this.__root || ((input as unknown) as Root);
     this.shape.__path = this.__path.concat(String(ndx));
   }
-
-  /* Call after schema is defined */
 
   public validate(input: Input): Result {
     // Generic validation
@@ -73,11 +76,21 @@ class OKArray<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     return (input.map(el => this.shape.cast(el)) as unknown) as Input;
   }
 
+  /**
+   * Verify that the array is an exact length
+   * @param len required length of array
+   * @param msg error message if test fails
+   */
   public length(len: number, msg?: string) {
     this.addTest(v => v.length === len, msg || `Must have length ${len}`);
     return this;
   }
 
+  /**
+   * Verify that the array is at least a certain length
+   * @param min the minimum valid length
+   * @param msg error message if test fails
+   */
   public min(min: number, msg?: string) {
     this.addTest(
       v => v.length >= min,
@@ -86,6 +99,11 @@ class OKArray<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     return this;
   }
 
+  /**
+   * Verify that the array is at most a certain length
+   * @param max the maximum valid length
+   * @param msg error message if test fails
+   */
   public max(max: number, msg?: string) {
     this.addTest(
       v => v.length <= max,

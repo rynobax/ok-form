@@ -5,6 +5,11 @@ export interface Shape<Input> {
 declare class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     private shape;
     private parseErrorMsg;
+    /**
+     * Create an object schema, which will only accept an object
+     * @param shape A schema for the object
+     * @param msg The error message if the schema is not passed an object
+     */
     constructor(shape: Shape<Input>, msg?: string);
     private addTest;
     private iterateShape;

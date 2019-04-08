@@ -1,4 +1,4 @@
-import OKAny, { TransformFn } from './any';
+import OKAny from './any';
 
 const parseNumber = (val: unknown) => {
   if (typeof val === 'string') {
@@ -15,6 +15,17 @@ const parseNumber = (val: unknown) => {
 };
 
 class OKNumber<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
+  /**
+   * Create a number schema
+   *
+   * If the input value is a non empty string, it will be converted to a number
+   * with Number(val)
+   *
+   * If the parsed value is NaN, validation will fail
+   *
+   * @param msg The error message if the schema cannot convert the value to a
+   * number
+   */
   public constructor(msg?: string) {
     super();
     this.transform(parseNumber);
@@ -26,6 +37,11 @@ class OKNumber<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
 
   private addTest = this.makeAddTest<number>();
 
+  /**
+   * Verify that the number is greater than a value
+   * @param min minimum value
+   * @param msg error message if test fails
+   */
   public min(min: number, msg?: string) {
     this.addTest(
       v => v >= min,
@@ -34,38 +50,60 @@ class OKNumber<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     return this;
   }
 
+  /**
+   * Verify that the number is less than a value
+   * @param max maximum value
+   * @param msg error message if test fails
+   */
   public max(max: number, msg?: string) {
     this.addTest(v => v <= max, msg || `Must be less than or equal to ${max}`);
     return this;
   }
 
-  public lessThan(x: number, msg?: string) {
-    this.addTest(v => v < x, msg || `Must be less than ${x}`);
+  /**
+   * Verify that the number is less than a value
+   * @param max maximum value
+   * @param msg error message if test fails
+   */
+  public lessThan(max: number, msg?: string) {
+    this.addTest(v => v < max, msg || `Must be less than ${max}`);
     return this;
   }
 
-  public moreThan(x: number, msg?: string) {
-    this.addTest(v => v > x, msg || `Must be greater than ${x}`);
+  /**
+   * Verify that the number is greater than a value
+   * @param min minimum value
+   * @param msg error message if test fails
+   */
+  public moreThan(min: number, msg?: string) {
+    this.addTest(v => v > min, msg || `Must be greater than ${min}`);
     return this;
   }
 
+  /**
+   * Verify that the number is greater than zero
+   * @param msg error message if test fails
+   */
   public positive(msg?: string) {
     this.addTest(v => v > 0, msg || `Must be positive`);
     return this;
   }
 
+  /**
+   * Verify that the number is less than zero
+   * @param msg error message if test fails
+   */
   public negative(msg?: string) {
     this.addTest(v => v < 0, msg || `Must be negative`);
     return this;
   }
 
+  /**
+   * Verify that the number is an integer
+   * @param msg error message if test fails
+   */
   public integer(msg?: string) {
     this.addTest(v => Number.isInteger(v), msg || 'Must be an integer');
-    return this;
-  }
-
-  public transform(transformFn: TransformFn<Input, Parent, Root>) {
-    this.transforms.push(transformFn);
     return this;
   }
 }

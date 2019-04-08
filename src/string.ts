@@ -11,17 +11,36 @@ const parseString = (val: unknown) => {
 };
 
 class OKString<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
+  /**
+   * Create a string schema
+   *
+   * The input value will be converted to string with String(val)
+   *
+   * The values null and undefined will be left as is
+   * @param msg The error message if the schema cannot convert the value to a
+   * string
+   */
   public constructor(msg?: string) {
     super();
     this.transform(parseString);
     this.addTest(v => typeof v === 'string', msg || 'Must be a string');
   }
 
+  /**
+   * Verify that the string is an exact length
+   * @param len required length of array
+   * @param msg error message if test fails
+   */
   public length(len: number, msg?: string) {
     this.addTest(v => v.length === len, msg || `Must have length ${len}`);
     return this;
   }
 
+  /**
+   * Verify that the string is at least a certain length
+   * @param min the minimum valid length
+   * @param msg error message if test fails
+   */
   public min(min: number, msg?: string) {
     this.addTest(
       v => v.length >= min,
@@ -30,6 +49,11 @@ class OKString<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     return this;
   }
 
+  /**
+   * Verify that the string is at most a certain length
+   * @param max the maximum valid length
+   * @param msg error message if test fails
+   */
   public max(max: number, msg?: string) {
     this.addTest(
       v => v.length <= max,
@@ -38,6 +62,11 @@ class OKString<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     return this;
   }
 
+  /**
+   * Verify that the string matches a regular expression
+   * @param regex regular expression to use
+   * @param msg error message if test fails
+   */
   public matches(regex: RegExp, msg?: string) {
     this.addTest(
       v => regex.test(v),
@@ -46,6 +75,10 @@ class OKString<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     return this;
   }
 
+  /**
+   * Verify that the string is an email address
+   * @param msg error message if test fails
+   */
   public email(msg?: string) {
     this.addTest(v => emailRegex.test(v), msg || `Must be an email address`);
     return this;

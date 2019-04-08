@@ -33,12 +33,15 @@ interface Test<Input, Parent, Root> {
     testFn: TestFn<Input, Parent, Root>;
     skipIfNull?: boolean;
 }
-export declare type TransformFn<Input, Parent, Root> = (val: Input, context: TestContext<Parent, Root>) => any;
+declare type TransformFn<Input, Parent, Root> = (val: Input, context: TestContext<Parent, Root>) => any;
 declare class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
     private isOptional;
     private requiredMessage;
     protected tests: Test<Input, Parent, Root>[];
     protected transforms: TransformFn<Input, Parent, Root>[];
+    /**
+     * Create "any" schema, which will accept any value
+     */
     constructor();
     protected error(msg: string, validationError?: ValidationRuntimeError): ResultInvalidPrimitive;
     protected error(msg: ValidationErrorObject, validationError?: ValidationRuntimeError): ResultInvalidObject;
@@ -48,21 +51,52 @@ declare class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
     protected getContext(): TestContext<Parent, Root>;
     protected makeAddTest: <T = unknown>() => (predicate: (v: T) => boolean, msg: string) => void;
     /**
-     * Build schema
+     * Mark schema as optional, meaning that empty string, null, and undefined
+     * are valid values
      */
     optional(): this;
+    /**
+     * Add a tranformation to the schema.  The transformation will be run before
+     * any of the tests
+     * @param transformFn A function that returns the updated value
+     */
     transform(transformFn: TransformFn<Input, Parent, Root>): this;
+    /**
+     * Add an arbitrary test to the schema
+     * @param testFn A function which will be passed the current value, and
+     * should return an error message string if there is an error.  If a schema
+     * is returned, it will be executed and the result used.
+     */
     test(testFn: TestFn<Input, Parent, Root>): OKAny<Input, Parent, Root>;
     /**
+     * Fields are considered required by default.  If you want to customize the
+     * error message, you can use this method.
      * @param msg Error message if field is empty (empty string, null, undefined)
      */
     required(msg?: string): this;
     /**
-     * Call after schema is defined
+     * Attempt to cast the input into the schema shape.  All transforms will be
+     * run, and the result returned, or an error thrown.
+     * @param input The object to be cast
      */
     cast(input: Input): Input;
     private handleValidationError;
+    /**
+     * Validate an object.  All transforms will be run, then all tests will
+     * be run, and a result object will be returned.  If all the tests pass,
+     * valid will be true, and error will be null.  If any test fails, valid
+     * will be false, and error will contain the all the errors that occured.
+     * @param input The object to be validated
+     */
     validate(input: Input): Result;
+    /**
+     * Validate an object asynchronously.  All transforms will be run, then all
+     * tests will be run, and a promise for the result object will be returned.
+     * If all the tests pass, valid will be true, and error will be null.  If
+     * any test fails, valid will be false, and error will contain the all the
+     * errors that occured.
+     * @param input The object to be validated
+     */
     validateAsync(input: Input): Promise<Result>;
 }
 export default OKAny;

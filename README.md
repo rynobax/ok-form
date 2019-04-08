@@ -26,7 +26,7 @@ note about required vs constructor
 
 ## Core
 
-- [ ] jsdoc comments
+- [ ] generate api docs from jsdoc?
 - [ ] Write readme
 
 ## Util

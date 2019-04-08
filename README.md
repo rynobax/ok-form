@@ -2,6 +2,8 @@
 
 minimal js object validation
 
+# WORK IN PROGRESS
+
 ## Keywords
 
 simple, predictable

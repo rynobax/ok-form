@@ -1,7 +1,7 @@
 {
   "name": "ok-form",
   "version": "0.0.0",
-  "description": "",
+  "description": "minimal js object validation",
   "author": "Ryan Baxley",
   "license": "MIT",
   "main": "./lib/index.js",
@@ -18,7 +18,7 @@
     "test:watch": "jest --watch",
     "size": "bundlesize",
     "explore": "source-map-explorer lib/index.js",
-    "ci": "yarn run test && yarn run size && yarn run build"
+    "ci": "yarn run lint && yarn run test && yarn run size && yarn run build"
   },
   "dependencies": {},
   "devDependencies": {

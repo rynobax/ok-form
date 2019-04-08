@@ -39,9 +39,6 @@ declare class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
     private requiredMessage;
     protected tests: Test<Input, Parent, Root>[];
     protected transforms: TransformFn<Input, Parent, Root>[];
-    /**
-     * Create "any" schema, which will accept any value
-     */
     constructor();
     protected error(msg: string, validationError?: ValidationRuntimeError): ResultInvalidPrimitive;
     protected error(msg: ValidationErrorObject, validationError?: ValidationRuntimeError): ResultInvalidObject;

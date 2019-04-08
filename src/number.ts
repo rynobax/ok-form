@@ -15,17 +15,6 @@ const parseNumber = (val: unknown) => {
 };
 
 class OKNumber<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
-  /**
-   * Create a number schema
-   *
-   * If the input value is a non empty string, it will be converted to a number
-   * with Number(val)
-   *
-   * If the parsed value is NaN, validation will fail
-   *
-   * @param msg The error message if the schema cannot convert the value to a
-   * number
-   */
   public constructor(msg?: string) {
     super();
     this.transform(parseNumber);

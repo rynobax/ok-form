@@ -86,9 +86,6 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
   // @internal
   public __path: string[] = [];
 
-  /**
-   * Create "any" schema, which will accept any value
-   */
   public constructor() {}
 
   /* Internal */

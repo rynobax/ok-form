@@ -2,11 +2,6 @@ import OKAny, { Result } from './any';
 declare class OKArray<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     private shape;
     private parseErrorMsg;
-    /**
-     * Create an array schema, which will only accept an array
-     * @param shape A schema for the elements of the array
-     * @param msg The error message if the schema is not passed an array
-     */
     constructor(shape: OKAny, msg?: string);
     private addTest;
     private setContext;

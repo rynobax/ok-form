@@ -1,14 +1,5 @@
 import OKAny from './any';
 declare class OKString<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
-    /**
-     * Create a string schema
-     *
-     * The input value will be converted to string with String(val)
-     *
-     * The values null and undefined will be left as is
-     * @param msg The error message if the schema cannot convert the value to a
-     * string
-     */
     constructor(msg?: string);
     /**
      * Verify that the string is an exact length

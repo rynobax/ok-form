@@ -28,6 +28,8 @@ note about required vs constructor
 
 - [ ] generate api docs from jsdoc?
 - [ ] Write readme
+  - [ ] Examples
+  - [ ] Typescript examples
 
 ## Util
 

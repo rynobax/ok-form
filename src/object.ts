@@ -17,11 +17,6 @@ class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
   private shape: Shape<Input>;
   private parseErrorMsg = 'Must be an object';
 
-  /**
-   * Create an object schema, which will only accept an object
-   * @param shape A schema for the object
-   * @param msg The error message if the schema is not passed an object
-   */
   public constructor(shape: Shape<Input>, msg?: string) {
     super();
     this.shape = shape;

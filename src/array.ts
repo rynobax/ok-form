@@ -5,11 +5,6 @@ class OKArray<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
   private shape: OKAny;
   private parseErrorMsg = 'Must be an array';
 
-  /**
-   * Create an array schema, which will only accept an array
-   * @param shape A schema for the elements of the array
-   * @param msg The error message if the schema is not passed an array
-   */
   public constructor(shape: OKAny, msg?: string) {
     super();
     this.shape = shape;

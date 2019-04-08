@@ -17,7 +17,7 @@ note about required vs constructor
 
 ## Core
 
-- [ ] Babel target browsers?
+- [ ] compare babel build to ts build
 - [ ] jsdoc comments
 - [ ] Write readme
 

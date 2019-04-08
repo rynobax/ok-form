@@ -4,12 +4,13 @@
     [
       "@babel/preset-env",
       {
-        "targets": "> 25%, not dead"
+        "targets": "> .25%, not dead",
+        "exclude": ["transform-async-to-generator", "transform-regenerator"]
       }
     ]
   ],
   "plugins": [
     "@babel/proposal-class-properties",
     "@babel/proposal-object-rest-spread"
-  ],
+  ]
 }

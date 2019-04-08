@@ -17,7 +17,6 @@ note about required vs constructor
 
 ## Core
 
-- [ ] compare babel build to ts build
 - [ ] jsdoc comments
 - [ ] Write readme
 

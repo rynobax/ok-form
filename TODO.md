@@ -15,6 +15,8 @@ note about required vs constructor
 
 ## Core
 
+- [ ] Clean up validationerror
+  - [ ] It will only capture the top level one
 - [ ] Write readme
   - [ ] Examples
   - [ ] Typescript examples

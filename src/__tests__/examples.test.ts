@@ -4,7 +4,11 @@ describe('sign up', () => {
   const schema = ok.object({
     first: ok.string().optional(),
     last: ok.string().optional(),
-    email: ok.string().email('Invalid email'),
+    email: ok
+      .string()
+      .required('Email is required')
+      .email('Invalid email'),
+    age: ok.number().optional(),
     password: ok.string().min(8, 'Password must be at least 8 characters!'),
     confirmPassword: ok.string().test((v, { parent }) => {
       if (v !== parent.password) return 'Passwords must match!';
@@ -16,6 +20,7 @@ describe('sign up', () => {
       first: 'John',
       last: '',
       email: 'john@gmail.com',
+      age: '24',
       password: 'supersecret',
       confirmPassword: 'supersecret',
     });
@@ -28,12 +33,14 @@ describe('sign up', () => {
       first: 'John',
       last: '',
       email: 'not an email',
+      age: 'not a number',
       password: 'short',
       confirmPassword: 'notsecret',
     });
     expect(result.valid).toBe(false);
     expect(result.error).toEqual({
       email: 'Invalid email',
+      age: 'Must be a number',
       password: 'Password must be at least 8 characters!',
       confirmPassword: 'Passwords must match!',
     });

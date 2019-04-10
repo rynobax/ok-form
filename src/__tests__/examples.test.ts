@@ -133,3 +133,22 @@ describe('residents', () => {
     });
   });
 });
+
+describe('async &&', () => {
+  async function emailInUse(str: string) {
+    return str === 'inUse@gmail.com';
+  }
+  const schema = ok
+    .string()
+    .test(async v => (await emailInUse(v)) && 'Username already in use!');
+
+  test('valid', async () => {
+    const result = await schema.validateAsync('notInUse@gmail.com');
+    expect(result.valid).toBe(true);
+  });
+
+  test('invalid', async () => {
+    const result = await schema.validateAsync('inUse@gmail.com');
+    expect(result.valid).toBe(false);
+  });
+});

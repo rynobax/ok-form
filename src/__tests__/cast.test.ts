@@ -41,11 +41,33 @@ describe('object transforms', () => {
   });
 });
 
+describe('casting empty', () => {
+  test('object null', () => {
+    const schema = ok.object({ string: ok.string() });
+    expect(schema.cast(null)).toEqual(null);
+  });
+
+  test('object undefined', () => {
+    const schema = ok.object({ string: ok.string() });
+    expect(schema.cast(undefined)).toEqual(undefined);
+  });
+
+  test('array null', () => {
+    const schema = ok.array(ok.string());
+    expect(schema.cast(null)).toEqual(null);
+  });
+
+  test('array undefined', () => {
+    const schema = ok.array(ok.string());
+    expect(schema.cast(undefined)).toEqual(undefined);
+  });
+});
+
 describe('casting nonsense', () => {
   test('object', () => {
     const schema = ok.object({
       double: ok.number().transform(v => v * 2),
-      string: ok.number(),
+      string: ok.string(),
     });
     expect(schema.cast('lol')).toEqual('lol');
   });

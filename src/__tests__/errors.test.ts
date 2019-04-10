@@ -1,23 +1,35 @@
 import ok from '../index';
-import { ValidationRuntimeError } from '../errors';
 
 test('casting string to object', () => {
   const schema = ok.object({
     double: ok.number().transform(v => v * 2),
     string: ok.number(),
   });
-  try {
-    schema.cast('lol');
-    expect('test').toEqual('to have thrown');
-  } catch (err) {
-    expect(err instanceof ValidationRuntimeError).toBe(true);
-    expect((err as ValidationRuntimeError).message).toEqual(
-      'Must be an object'
-    );
-    expect((err as ValidationRuntimeError).originalError.message).toEqual(
-      'Cannot cast string to object'
-    );
-  }
+  const result = schema.cast('lol');
+  expect(result).toEqual('lol');
+});
+
+test('casting string to object nested', () => {
+  const schema = ok.object({
+    foo: ok.object({
+      double: ok.number().transform(v => v * 2),
+      string: ok.number(),
+    }),
+  });
+  const result = schema.cast({ foo: 'lol' });
+  expect(result).toEqual({ foo: 'lol' });
+});
+
+test('validate string to object nested', () => {
+  const schema = ok.object({
+    foo: ok.object({
+      double: ok.number().transform(v => v * 2),
+      string: ok.number(),
+    }),
+  });
+  const { error, valid } = schema.validate({ foo: 'lol' });
+  expect(valid).toEqual(false);
+  expect(error).toEqual({ foo: 'Must be an object' });
 });
 
 test('.test that throws', () => {
@@ -27,11 +39,7 @@ test('.test that throws', () => {
     .test(v => {
       return v.foo;
     });
-  const { validationError } = schema.validate(null);
-  expect(validationError!.message).toEqual(
-    "Cannot read property 'foo' of null"
-  );
-  expect(validationError!.originalError.message).toEqual(
+  expect(() => schema.validate(null)).toThrow(
     "Cannot read property 'foo' of null"
   );
 });

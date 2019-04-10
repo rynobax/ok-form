@@ -1,5 +1,4 @@
 import OKAny, { ValidationError, Result } from './any';
-import { ValidationRuntimeError } from './errors';
 
 export interface Shape<Input> {
   [key: string]: OKAny<Input>;
@@ -101,10 +100,7 @@ class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
   public cast(input: Input) {
     // If we are trying to cast something that is not an object give up
     if (!isObject(input)) {
-      throw new ValidationRuntimeError({
-        message: this.parseErrorMsg,
-        originalError: new Error(`Cannot cast ${typeof input} to object`),
-      });
+      return input;
     }
     const newInput: UnknownObj = {};
     for (const { ok, val, key } of this.iterateShape(input)) {

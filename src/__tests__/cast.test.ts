@@ -47,7 +47,17 @@ describe('casting nonsense', () => {
       double: ok.number().transform(v => v * 2),
       string: ok.number(),
     });
-    expect(() => schema.cast('lol')).toThrow('Must be an object');
+    expect(schema.cast('lol')).toEqual('lol');
+  });
+
+  test('nestedobject', () => {
+    const schema = ok.object({
+      foo: ok.object({
+        double: ok.number().transform(v => v * 2),
+        string: ok.number(),
+      }),
+    });
+    expect(schema.cast({ foo: 'lol' })).toEqual({ foo: 'lol' });
   });
 
   test('number', () => {

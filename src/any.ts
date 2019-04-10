@@ -1,5 +1,3 @@
-import { ValidationRuntimeError } from './errors';
-
 export interface ValidationErrorObject {
   [key: string]: ValidationError;
 }
@@ -14,7 +12,6 @@ interface ResultValid {
 
 interface ResultInvalidBase {
   valid: false;
-  validationError: ValidationRuntimeError;
 }
 
 interface ResultInvalidPrimitive extends ResultInvalidBase {
@@ -90,35 +87,18 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
 
   /* Internal */
 
-  protected error(
-    msg: string,
-    validationError?: ValidationRuntimeError
-  ): ResultInvalidPrimitive;
-  protected error(
-    msg: ValidationErrorObject,
-    validationError?: ValidationRuntimeError
-  ): ResultInvalidObject;
-  protected error(
-    msg: (string | null)[],
-    validationError?: ValidationRuntimeError
-  ): ResultInvalidObject;
-  protected error(
-    msg: (ValidationErrorObject | null)[],
-    validationError?: ValidationRuntimeError
-  ): ResultInvalidObject;
+  protected error(msg: string): ResultInvalidPrimitive;
+  protected error(msg: ValidationErrorObject): ResultInvalidObject;
+  protected error(msg: (string | null)[]): ResultInvalidObject;
+  protected error(msg: (ValidationErrorObject | null)[]): ResultInvalidObject;
   protected error(
     msg:
       | string
       | ValidationErrorObject
       | (string | null)[]
-      | (ValidationErrorObject | null)[],
-    validationError?: ValidationRuntimeError
+      | (ValidationErrorObject | null)[]
   ) {
-    return {
-      valid: false,
-      error: msg,
-      validationError: validationError || null,
-    };
+    return { valid: false, error: msg };
   }
 
   protected success(): ResultValid {
@@ -199,27 +179,6 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
     );
   }
 
-  private handleValidationError(err: any) {
-    // An error thrown by use (ex: impossible cast request)
-    if (err instanceof ValidationRuntimeError) {
-      return this.error(err.message, err);
-    } else if (err && err.message) {
-      // Unknown error
-      const runtimeError = new ValidationRuntimeError({
-        message: err.message,
-        originalError: err,
-      });
-      return this.error('Invalid', runtimeError);
-    } else {
-      // Non error was thrown
-      const runtimeError = new ValidationRuntimeError({
-        message: 'Error',
-        originalError: err,
-      });
-      return this.error('Invalid', runtimeError);
-    }
-  }
-
   /**
    * Validate an object.  All transforms will be run, then all tests will
    * be run, and a result object will be returned.  If all the tests pass,
@@ -228,32 +187,28 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
    * @param input The object to be validated
    */
   public validate(input: Input): Result {
-    try {
-      const value = this.cast(input);
+    const value = this.cast(input);
 
-      const isNullish = checkNullish(value);
-      if (isNullish && !this.isOptional) {
-        return this.error(this.requiredMessage);
-      }
-
-      const context = this.getContext();
-      for (const { testFn, skipIfNull } of this.tests) {
-        if (isNullish && skipIfNull) {
-          continue;
-        }
-        const res = testFn(value, context);
-        if (res instanceof Promise)
-          return this.error(
-            'Cannot run async test in validate, use validateAsync'
-          );
-        else if (res instanceof OKAny) return res.validate(value);
-        else if (isString(res)) return this.error(res);
-      }
-
-      return this.success();
-    } catch (err) {
-      return this.handleValidationError(err);
+    const isNullish = checkNullish(value);
+    if (isNullish && !this.isOptional) {
+      return this.error(this.requiredMessage);
     }
+
+    const context = this.getContext();
+    for (const { testFn, skipIfNull } of this.tests) {
+      if (isNullish && skipIfNull) {
+        continue;
+      }
+      const res = testFn(value, context);
+      if (res instanceof Promise)
+        return this.error(
+          'Cannot run async test in validate, use validateAsync'
+        );
+      else if (res instanceof OKAny) return res.validate(value);
+      else if (isString(res)) return this.error(res);
+    }
+
+    return this.success();
   }
 
   /**
@@ -265,33 +220,29 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
    * @param input The object to be validated
    */
   public async validateAsync(input: Input): Promise<Result> {
-    try {
-      const value = this.cast(input);
+    const value = this.cast(input);
 
-      const isNullish = checkNullish(value);
-      if (isNullish && !this.isOptional) {
-        return this.error(this.requiredMessage);
-      }
-
-      const context = this.getContext();
-      const testResults = await Promise.all(
-        this.tests.map(async ({ testFn, skipIfNull }) => {
-          if (isNullish && skipIfNull) {
-            return null;
-          }
-          const res = await testFn(value, context);
-          if (res instanceof OKAny)
-            return res.validateAsync(value).then(r => r.error);
-          else if (isString(res)) return res;
-          else return null;
-        })
-      );
-      const firstError = testResults.filter(isString)[0];
-      if (firstError) return this.error(firstError);
-      else return this.success();
-    } catch (err) {
-      return this.handleValidationError(err);
+    const isNullish = checkNullish(value);
+    if (isNullish && !this.isOptional) {
+      return this.error(this.requiredMessage);
     }
+
+    const context = this.getContext();
+    const testResults = await Promise.all(
+      this.tests.map(async ({ testFn, skipIfNull }) => {
+        if (isNullish && skipIfNull) {
+          return null;
+        }
+        const res = await testFn(value, context);
+        if (res instanceof OKAny)
+          return res.validateAsync(value).then(r => r.error);
+        else if (isString(res)) return res;
+        else return null;
+      })
+    );
+    const firstError = testResults.filter(isString)[0];
+    if (firstError) return this.error(firstError);
+    else return this.success();
   }
 }
 

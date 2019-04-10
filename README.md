@@ -79,7 +79,6 @@ TODO: These are important, clean up text
 
 - `valid`: whether or not the value is valid
 - `error`: A mirror of the schema, where the key will be set to a string of the error message, if it was not valid.
-- `validationError`: If any of the tests or transformations throw an error, it will be
 
 ### `any.validate(value: any)`
 

@@ -1,5 +1,4 @@
 import OKAny, { Result } from './any';
-import { ValidationRuntimeError } from './errors';
 
 class OKArray<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
   private shape: OKAny;
@@ -63,10 +62,7 @@ class OKArray<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
   public cast(input: Input) {
     // If we are trying to cast something that is not an array give up
     if (!Array.isArray(input)) {
-      throw new ValidationRuntimeError({
-        message: this.parseErrorMsg,
-        originalError: new Error(`Cannot cast ${typeof input} to array`),
-      });
+      return input;
     }
     return (input.map(el => this.shape.cast(el)) as unknown) as Input;
   }

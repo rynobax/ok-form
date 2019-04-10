@@ -82,6 +82,8 @@ TODO: These are important, clean up text
 
 // TODO: maybe call these schema.?
 
+## any
+
 ### `any.validate(value: any): Result`
 
 Validates a value using the schema
@@ -142,3 +144,78 @@ schema.validate(null) // -> { valid: false, error: 'This is required!' };
 ### `any.transform()`
 
 ### `any.test()`
+
+// TODO: where should this go
+
+### `any()`
+
+## object
+
+### `object()`
+
+## array
+
+### `array()`
+
+### `array.length()`
+
+### `array.min()`
+
+### `array.max()`
+
+## string
+
+### `string()`
+
+### `string.length()`
+
+### `string.min()`
+
+### `string.max()`
+
+### `string.matches()`
+
+### `string.email()`
+
+## number
+
+### `number()`
+
+### `number.min()`
+
+### `number.max()`
+
+### `number.lessThan()`
+
+### `number.moreThan()`
+
+### `number.positive()`
+
+### `number.negative()`
+
+### `number.integer()`
+
+## boolean
+
+### `boolean()`
+
+# Notes
+
+conditionals
+
+if number is null, dont run "number" tests, but still run "any" tests
+
+note about required vs constructor
+
+# issues with joi and yup / why not...
+
+## joi
+
+Hard to set error msgs
+bundle size?
+
+# yup
+
+converting string -> number is a pain
+dsl for conditional validation is strange
+circular references

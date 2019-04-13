@@ -49,3 +49,17 @@ test('tranform can convert away null values', () => {
   const result = schema.validate(null);
   expect(result.valid).toBe(true);
 });
+
+test('custom transform runs before validation', () => {
+  const schema = ok.number().transform(v => {
+    // Conver fraction to number
+    if (v.includes('/')) {
+      const [numerator, denominator] = v.split('/').map(Number);
+      return numerator / denominator;
+    }
+  });
+  const result = schema.validate('3/4');
+  expect(result.valid).toBe(true);
+  const value = schema.cast('3/4');
+  expect(value).toEqual(0.75);
+});

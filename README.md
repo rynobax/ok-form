@@ -87,6 +87,7 @@ TODO: These are important, clean up text
 ### `any.validate(value: any): Result`
 
 Validates a value using the schema
+// TODO: Note that this casts first
 
 ```
 const schema = ok.object({ foo: ok.number('Must be a number!') });
@@ -142,6 +143,18 @@ schema.validate(null) // -> { valid: false, error: 'This is required!' };
 ```
 
 ### `any.transform()`
+
+Add a transformation to the schema. These transformations will be run when a value is cast via the schema.
+
+The transformations will be run in the order they are defined
+
+```
+const schema = ok.number().transform(v => {
+
+});
+schema.validate('') // -> { valid: false, error: 'This is required!' };
+schema.validate(null) // -> { valid: false, error: 'This is required!' };
+```
 
 ### `any.test()`
 

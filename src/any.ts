@@ -53,7 +53,7 @@ interface Test<Input, Parent, Root> {
   skipIfNull?: boolean;
 }
 
-type TransformFn<Input, Parent, Root> = (
+export type TransformFn<Input, Parent, Root> = (
   val: Input,
   context: TestContext<Parent, Root>
 ) => any;

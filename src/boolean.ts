@@ -1,4 +1,4 @@
-import OKAny from './any';
+import OKAny, { TransformFn } from './any';
 
 const parseBoolean = (val: unknown) => {
   if (typeof val === 'string') {
@@ -15,9 +15,16 @@ const parseBoolean = (val: unknown) => {
 };
 
 class OKBoolean<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
-  public constructor(msg?: string) {
+  public constructor(
+    msg?: string,
+    transform?: TransformFn<Input, Parent, Root>
+  ) {
     super();
-    this.transform(parseBoolean);
+    if (transform) {
+      this.transform(transform);
+    } else {
+      this.transform(parseBoolean);
+    }
     this.addTest(v => typeof v === 'boolean', msg || 'Must be a boolean');
   }
 

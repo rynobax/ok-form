@@ -1,4 +1,4 @@
-import OKAny from './any';
+import OKAny, { TransformFn } from './any';
 
 // from emailregex.com
 const emailRegex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -11,9 +11,16 @@ const parseString = (val: unknown) => {
 };
 
 class OKString<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
-  public constructor(msg?: string) {
+  public constructor(
+    msg?: string,
+    transform?: TransformFn<Input, Parent, Root>
+  ) {
     super();
-    this.transform(parseString);
+    if (transform) {
+      this.transform(transform);
+    } else {
+      this.transform(parseString);
+    }
     this.addTest(v => typeof v === 'string', msg || 'Must be a string');
   }
 

@@ -51,8 +51,8 @@ test('tranform can convert away null values', () => {
 });
 
 test('custom transform runs before validation', () => {
-  const schema = ok.number().transform(v => {
-    // Conver fraction to number
+  const schema = ok.number('Must be a number', v => {
+    // Convert fraction to number
     if (v.includes('/')) {
       const [numerator, denominator] = v.split('/').map(Number);
       return numerator / denominator;

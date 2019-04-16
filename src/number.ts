@@ -1,4 +1,4 @@
-import OKAny from './any';
+import OKAny, { TransformFn } from './any';
 
 const parseNumber = (val: unknown) => {
   if (typeof val === 'string') {
@@ -15,9 +15,16 @@ const parseNumber = (val: unknown) => {
 };
 
 class OKNumber<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
-  public constructor(msg?: string) {
+  public constructor(
+    msg?: string,
+    transform?: TransformFn<Input, Parent, Root>
+  ) {
     super();
-    this.transform(parseNumber);
+    if (transform) {
+      this.transform(transform);
+    } else {
+      this.transform(parseNumber);
+    }
     this.addTest(
       v => typeof v === 'number' && !Number.isNaN(v),
       msg || 'Must be a number'

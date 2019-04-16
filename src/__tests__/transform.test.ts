@@ -50,16 +50,39 @@ test('tranform can convert away null values', () => {
   expect(result.valid).toBe(true);
 });
 
-test('custom transform runs before validation', () => {
-  const schema = ok.number('Must be a number', v => {
-    // Convert fraction to number
-    if (v.includes('/')) {
-      const [numerator, denominator] = v.split('/').map(Number);
-      return numerator / denominator;
-    }
+describe('custom transform runs before validation', () => {
+  test('number', () => {
+    const schema = ok.number('Must be a number', v => {
+      // Convert fraction to number
+      if (v.includes('/')) {
+        const [numerator, denominator] = v.split('/').map(Number);
+        return numerator / denominator;
+      }
+    });
+    const result = schema.validate('3/4');
+    expect(result.valid).toBe(true);
+    const value = schema.cast('3/4');
+    expect(value).toEqual(0.75);
   });
-  const result = schema.validate('3/4');
-  expect(result.valid).toBe(true);
-  const value = schema.cast('3/4');
-  expect(value).toEqual(0.75);
+
+  test('string', () => {
+    const schema = ok.string('Must be a string', String);
+    const result = schema.validate(null);
+    expect(result.valid).toBe(true);
+    const value = schema.cast(null);
+    expect(value).toEqual('null');
+  });
+
+  test('boolean', () => {
+    const schema = ok.boolean('Must be a boolean', v => {
+      // Accept t or f
+      if (v === 't') return true;
+      else if (v === 'f') return false;
+      else return v;
+    });
+    const result = schema.validate('t');
+    expect(result.valid).toBe(true);
+    const value = schema.cast('t');
+    expect(value).toEqual(true);
+  });
 });

@@ -149,32 +149,39 @@ Add a transformation to the schema. These transformations will be run when a val
 The transformations will be run in the order they are defined
 
 ```
-const schema = ok.number().transform(v => {
-
-});
-schema.validate('') // -> { valid: false, error: 'This is required!' };
-schema.validate(null) // -> { valid: false, error: 'This is required!' };
+const schema = ok.number().transform(v => v * 2).max(10);
+schema.validate(8) // -> { valid: false, error: 'Must be less than or equal to 10' };
+schema.cast(8) // -> 16;
 ```
 
-### `any.test()`
+### `any.test(test: fn)`
+
+Adds a custom test function to the schema.
+
+The test will be passed the value, and should return a string (the error message) if there is an issue, or a non string if the value is valid.
+
+The second argument to `test` is the `Context` object, explained in detail [here](TODO)
+
+```
+const schema = ok.string().test(v => {
+  if (v === 'evil') return 'No evil allowed';
+});
+schema.validate('evil') // -> { valid: false, error: 'No evil allowed' };
+schema.cast('good') // -> { valid: true };
+```
 
 // TODO: where should this go
 
 ### `any()`
 
-## object
+Create a schema with minimal default validation/transformations. If you want to implement all validation logic yourself, you can use this.
 
-### `object()`
-
-## array
-
-### `array()`
-
-### `array.length()`
-
-### `array.min()`
-
-### `array.max()`
+```
+const schema = ok.any();
+schema.validate(5) // -> { valid: true };
+schema.validate(true) // -> { valid: true };
+schema.validate({ foo: [1, 2, 3] }) // -> { valid: true };
+```
 
 ## string
 
@@ -211,6 +218,20 @@ schema.validate(null) // -> { valid: false, error: 'This is required!' };
 ## boolean
 
 ### `boolean()`
+
+## object
+
+### `object()`
+
+## array
+
+### `array()`
+
+### `array.length()`
+
+### `array.min()`
+
+### `array.max()`
 
 # Notes
 

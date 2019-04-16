@@ -50,7 +50,7 @@ test('tranform can convert away null values', () => {
   expect(result.valid).toBe(true);
 });
 
-describe('custom transform runs before validation', () => {
+describe('custom transforms override default behavior', () => {
   test('number', () => {
     const schema = ok.number('Must be a number', v => {
       // Convert fraction to number

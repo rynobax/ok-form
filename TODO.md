@@ -7,7 +7,6 @@ minimal
 
 ## Core
 
-- [ ] Implement custom parsing transform via constructor
 - [ ] Write readme
   - [ ] Examples
   - [ ] Typescript examples

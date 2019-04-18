@@ -420,13 +420,34 @@ schema.validate([1, 2]) // -> { valid: true };
 schema.validate([1, 2, 3]) // -> { valid: false };
 ```
 
-# Notes
+## Tips
 
-conditionals
+### Conditional validation
 
-if number is null, dont run "number" tests, but still run "any" tests
+Conditional types can be achieved using test. If you return a schema from `.test`, it will be evaluated against the value. So if you only want to run the test under a certain condition, simply check the condition and return a schema for that case.
 
-note about required vs constructor
+Example: `a` and `b` are only required if the other is set
+
+```
+const schema = ok.object({
+  // Using ternary
+  a: ok
+    .number()
+    .optional()
+    .test((_, { parent }) => (parent.b ? ok.number() : null)),
+  // Using short-circuiting
+  b: ok
+    .number()
+    .optional()
+    .test((_, { parent }) => parent.a && ok.number()),
+});
+
+schema.validate({ a: null, b: null }) // -> { valid: true };
+schema.validate({ a: 1, b: null }) // -> { valid: false };
+schema.validate({ a: null, b: 1 }) // -> { valid: false };
+schema.validate({ a: 1, b: 1 }) // -> { valid: true };
+
+```
 
 # issues with joi and yup / why not...
 
@@ -441,6 +462,11 @@ converting string -> number is a pain
 dsl for conditional validation is strange
 circular references
 
-# random
+# mission
 
 in terms of casting, we err on the permissive side
+
+// TODO: Random stuff
+if number is null, dont run "number" tests, but still run "any" tests
+
+note about required vs constructor

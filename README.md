@@ -13,6 +13,8 @@ ok-form is a simple, predictable object schema validator that is optimized for f
 
 [joi](https://github.com/hapijs/joi) and [yup](https://github.com/jquense/yup) are both great libraries for validation. However, they have expansive APIs, and can make simple validation cases harder than it needs to be [(more on that here)](#TODO).
 
+ok-form differs from these libraries by offering a small API, having sensible casting behavior by default, and offering a very explicit API for conditional validation.
+
 ## Installation
 
 ```
@@ -461,10 +463,6 @@ bundle size?
 converting string -> number is a pain
 dsl for conditional validation is strange
 circular references
-
-# mission
-
-in terms of casting, we err on the permissive side
 
 // TODO: Random stuff
 if number is null, dont run "number" tests, but still run "any" tests

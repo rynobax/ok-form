@@ -217,7 +217,7 @@ Require the string be at least a certain length.
 const schema = ok.string().min(5);
 schema.validate('h') // -> { valid: false };
 schema.validate('hello') // -> { valid: true };
-schema.validate('hello world') // -> { valid: false };
+schema.validate('hello world') // -> { valid: true };
 ```
 
 ### `string.max(len: number, msg?: string)`
@@ -345,21 +345,80 @@ schema.validate(5.25) // -> { valid: false };
 
 ## boolean
 
-### `boolean()`
+### `boolean(msg?: string, transform?: fn)`
+
+Create a schema for a boolean.
+
+If the value is a string, the values `true` and `false` will be cast to their boolean representation. You can override the default cast by passing a transformation function as the second argument.
+
+```
+const schema = ok.boolean();
+schema.validate(true) // -> { valid: true };
+schema.validate('false') // -> { valid: true };
+schema.validate(5) // -> { valid: false };
+```
 
 ## object
 
-### `object()`
+### `object(shape: Shape, msg?: string)`
+
+Create a schema for an object.
+
+// TODO: Clarify shape
+
+```
+const schema = ok.object({ foo: ok.number(); });
+schema.validate({ foo: 5 }) // -> { valid: true };
+schema.validate({ foo: 'hello' }) // -> { valid: false };
+schema.validate(5) // -> { valid: false };
+```
 
 ## array
 
-### `array()`
+### `array(shape: Shape, msg?: string)`
+
+Create a schema for an array.
+
+// TODO: Clarify shape
+
+```
+const schema = ok.array(ok.number());
+schema.validate([1, 2, 3]) // -> { valid: true };
+schema.validate(['hello', 'world']) // -> { valid: false };
+schema.validate(5) // -> { valid: false };
+```
 
 ### `array.length()`
 
+Require the array be a certain length.
+
+```
+const schema = ok.array(ok.number()).length(2);
+schema.validate([1, 2]) // -> { valid: true };
+schema.validate([1, 2, 3]) // -> { valid: false };
+```
+
 ### `array.min()`
 
+Require the array be at least a certain length.
+
+```
+const schema = ok.array(ok.number()).min(2);
+schema.validate([1]) // -> { valid: false };
+schema.validate([1, 2]) // -> { valid: true };
+schema.validate([1, 2, 3]) // -> { valid: true };
+```
+
 ### `array.max()`
+
+Require the array be at most a certain length.
+
+```
+const schema = ok.array(ok.number()).max(2);
+schema.validate([1]) // -> { valid: true };
+schema.validate([1, 2]) // -> { valid: true };
+schema.validate([1, 2, 3]) // -> { valid: false };
+```
 
 # Notes
 

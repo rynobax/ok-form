@@ -86,7 +86,7 @@ TODO: These are important, clean up text
 
 ### `any.validate(value: any): Result`
 
-Validates a value using the schema
+Validates a value using the schema.
 // TODO: Note that this casts first
 
 ```
@@ -97,7 +97,7 @@ schema.validate({ foo: 'a' }); // -> { valid: false, error: { foo: 'Must be a nu
 
 ### `any.validateAsync(value: any): Promise<Result>`
 
-Validates an asynchronous schema
+Validates an asynchronous schema.
 
 ```
 const schema = ok
@@ -109,9 +109,9 @@ schema.validateAsync('inUse@email.com'); // -> Promise<{ valid: false, error: 'E
 
 ### `any.cast(value: any): any`
 
-Attempts to cast a value using the schema
-All transforms defined in the schema will be run, and the resulting object returned
-If an "impossible" cast is attempted (e.g. casting a string to an object) the input object will be returned
+Attempts to cast a value using the schema.
+All transforms defined in the schema will be run, and the resulting object returned.
+If an "impossible" cast is attempted (e.g. casting a string to an object) the input object will be returned.
 
 ```
 const schema = ok.object({ foo: ok.number('Must be a number!') });
@@ -123,7 +123,7 @@ schema.cast(''); // -> ''
 
 ### `any.optional()`
 
-Marks the schema as optional, meaning that `""`, `null`, `undefined` are considered valid
+Marks the schema as optional, meaning that `""`, `null`, `undefined` are considered valid.
 
 ```
 const schema = ok.string().optional();
@@ -142,11 +142,11 @@ schema.validate('') // -> { valid: false, error: 'This is required!' };
 schema.validate(null) // -> { valid: false, error: 'This is required!' };
 ```
 
-### `any.transform()`
+### `any.transform(transform: fn)`
 
 Add a transformation to the schema. These transformations will be run when a value is cast via the schema.
 
-The transformations will be run in the order they are defined
+The transformations will be run in the order they are defined.
 
 ```
 const schema = ok.number().transform(v => v * 2).max(10);
@@ -185,35 +185,163 @@ schema.validate({ foo: [1, 2, 3] }) // -> { valid: true };
 
 ## string
 
-### `string()`
+### `string(msg?: string, transform?: fn)`
 
-### `string.length()`
+Create a schema for a string.
 
-### `string.min()`
+If the value is not nullish or an object, the value will be cast using `String`. You can override the default cast by passing a transformation function as the second argument.
 
-### `string.max()`
+```
+const schema = ok.string();
+schema.validate('hello') // -> { valid: true };
+schema.validate(5) // -> { valid: true };
+schema.cast(5) // -> '5';
+schema.validate({ foo: 5 }) // -> { valid: false };
+```
 
-### `string.matches()`
+### `string.length(len: number, msg?: string)`
 
-### `string.email()`
+Require the string be a certain length.
+
+```
+const schema = ok.string().length(5);
+schema.validate('hello') // -> { valid: true };
+schema.validate('hello world') // -> { valid: false };
+```
+
+### `string.min(len: number, msg?: string)`
+
+Require the string be at least a certain length.
+
+```
+const schema = ok.string().min(5);
+schema.validate('h') // -> { valid: false };
+schema.validate('hello') // -> { valid: true };
+schema.validate('hello world') // -> { valid: false };
+```
+
+### `string.max(len: number, msg?: string)`
+
+Require the string be at most a certain length.
+
+```
+const schema = ok.string().max(5);
+schema.validate('h') // -> { valid: true };
+schema.validate('hello') // -> { valid: true };
+schema.validate('hello world') // -> { valid: false };
+```
+
+### `string.matches(regex: Regex, msg?: string)`
+
+Require the string match a regular expression.
+
+```
+const schema = ok.string().matches(/^[a-z]*$/);
+schema.validate('hello') // -> { valid: true };
+schema.validate('Hello') // -> { valid: false };
+```
+
+### `string.email(msg?: string)`
+
+Require the string is an email address (using [this regex](https://emailregex.com/)).
+
+```
+const schema = ok.string().matches(/^[a-z]*$/);
+schema.validate('hello@world.com') // -> { valid: true };
+schema.validate('hello world') // -> { valid: false };
+```
 
 ## number
 
-### `number()`
+### `number(msg?: string, transform?: fn)`
 
-### `number.min()`
+Create a schema for a number.
 
-### `number.max()`
+If the value is a string, the value will be cast using `Number`. You can override the default cast by passing a transformation function as the second argument.
 
-### `number.lessThan()`
+```
+const schema = ok.number();
+schema.validate(5) // -> { valid: true };
+schema.validate('5') // -> { valid: true };
+schema.cast('5') // -> '5';
+schema.validate('hello') // -> { valid: false };
+```
 
-### `number.moreThan()`
+### `number.min(val: number, msg?: string)`
 
-### `number.positive()`
+Require the number be at least a certain value.
 
-### `number.negative()`
+```
+const schema = ok.string().min(5);
+schema.validate(1) // -> { valid: false };
+schema.validate(5) // -> { valid: true };
+schema.validate(10) // -> { valid: true };
+```
 
-### `number.integer()`
+### `number.max(val: number, msg?: string)`
+
+Require the number be at most a certain value.
+
+```
+const schema = ok.string().max(5);
+schema.validate(1) // -> { valid: true };
+schema.validate(5) // -> { valid: true };
+schema.validate(10) // -> { valid: false };
+```
+
+### `number.lessThan(val: number, msg?: string)`
+
+Require the number be less than a certain value.
+
+```
+const schema = ok.string().lessThan(5);
+schema.validate(1) // -> { valid: true };
+schema.validate(5) // -> { valid: false };
+schema.validate(10) // -> { valid: false };
+```
+
+### `number.moreThan(val: number, msg?: string)`
+
+Require the number be more than a certain value.
+
+```
+const schema = ok.string().moreThan(5);
+schema.validate(1) // -> { valid: false };
+schema.validate(5) // -> { valid: false };
+schema.validate(10) // -> { valid: true };
+```
+
+### `number.positive(msg?: string)`
+
+Require the number be positive
+
+```
+const schema = ok.string().positive();
+schema.validate(-5) // -> { valid: false };
+schema.validate(0) // -> { valid: false };
+schema.validate(5) // -> { valid: true };
+```
+
+### `number.negative(msg?: string)`
+
+Require the number be negative
+
+```
+const schema = ok.string().negative();
+schema.validate(-5) // -> { valid: true };
+schema.validate(0) // -> { valid: false };
+schema.validate(5) // -> { valid: false };
+```
+
+### `number.integer(msg?: string)`
+
+Require the number be an integer
+
+```
+const schema = ok.string().integer();
+schema.validate(5) // -> { valid: true };
+schema.validate(5.25) // -> { valid: false };
+```
 
 ## boolean
 
@@ -253,3 +381,7 @@ bundle size?
 converting string -> number is a pain
 dsl for conditional validation is strange
 circular references
+
+# random
+
+in terms of casting, we err on the permissive side

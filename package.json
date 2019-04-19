@@ -8,6 +8,7 @@
   "types": "./types/index.d.ts",
   "scripts": {
     "build": "yarn run clean && yarn run build:src && yarn run build:types",
+    "build:readme": "doctoc README.md",
     "build:src": "babel ./src -o ./lib/index.js --ignore=**/__tests__/* --extensions .ts -s",
     "build:types": "tsc --emitDeclarationOnly",
     "ci": "yarn run lint && yarn run test && yarn run size && yarn run build",
@@ -33,6 +34,7 @@
     "@typescript-eslint/eslint-plugin": "^1.6.0",
     "@typescript-eslint/parser": "^1.6.0",
     "bundlesize": "^0.17.1",
+    "doctoc": "^1.4.0",
     "eslint": "^5.16.0",
     "eslint-config-prettier": "^4.1.0",
     "eslint-plugin-jest": "^22.4.1",

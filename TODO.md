@@ -8,12 +8,14 @@ minimal
 ## Core
 
 - [ ] Write readme
-  - [ ] Examples
-  - [ ] Typescript examples
+  - [x] Examples
+  - [ ] Typescript examples'
+  - [ ] Bades
+- [ ] Deploy and test
 
 ## Util
 
-- [ ] Deploy script
+- [x] Deploy script
 
 ## Branding
 

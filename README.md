@@ -11,7 +11,7 @@ Javscript schema-based validation for forms
 
 ok-form is a simple, predictable object schema validator that is optimized for validation of forms.
 
-[joi](https://github.com/hapijs/joi) and [yup](https://github.com/jquense/yup) are both good libraries, but can cause friction when used for validating web forms. ok-form improves upon them by having:
+[joi](https://github.com/hapijs/joi) and [yup](https://github.com/jquense/yup) are both good libraries, but can cause friction when used for validating forms. ok-form improves upon them by having:
 
 - a smaller bundle size (3kB vs 20+kB)
 - sensible default casting behavior
@@ -497,7 +497,7 @@ schema.validate(['hello', 'world']); // -> { valid: false };
 schema.validate(5); // -> { valid: false };
 ```
 
-### `array.length()`
+### `array.length(len: number, msg?: string)`
 
 Require the array be a certain length.
 
@@ -507,7 +507,7 @@ schema.validate([1, 2]); // -> { valid: true };
 schema.validate([1, 2, 3]); // -> { valid: false };
 ```
 
-### `array.min()`
+### `array.min(len: number, msg?: string)`
 
 Require the array be at least a certain length.
 
@@ -518,7 +518,7 @@ schema.validate([1, 2]); // -> { valid: true };
 schema.validate([1, 2, 3]); // -> { valid: true };
 ```
 
-### `array.max()`
+### `array.max(len: number, msg?: string)`
 
 Require the array be at most a certain length.
 

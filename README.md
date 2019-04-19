@@ -4,7 +4,7 @@ minimal js object schema validation
 
 [![Build Status](https://travis-ci.com/rynobax/ok-form.svg?branch=master)](https://travis-ci.com/rynobax/ok-form)
 [![Stable Release](https://img.shields.io/npm/v/ok-form.svg)](https://npm.im/ok-form)
-[![gzip size](TODO)](TODO)
+[![gzip size](http://img.badgesize.io/https://unpkg.com/ok-form@latest/lib/index.js?compression=gzip)](https://unpkg.com/ok-form@latest/lib/index.js)
 [![license](https://badgen.now.sh/badge/license/MIT)](./LICENSE)
 
 ## Introduction
@@ -222,10 +222,6 @@ Adds a custom test function to the schema.
 
 The test will be passed the value, and should return a string (the error message) if there is an issue, or a non string if the value is valid.
 
-The second argument to `test` is the `Context` object, explained in detail [here](TODO)
-
-Note that these tests will run even if the value is null, undefined, or empty, unlike the type specific tests (eg. `max`, `.length`, etc).
-
 ```javascript
 const schema = ok.string().test(v => {
   if (v === 'evil') return 'No evil allowed';
@@ -233,6 +229,57 @@ const schema = ok.string().test(v => {
 schema.validate('evil'); // -> { valid: false, error: 'No evil allowed' };
 schema.cast('good'); // -> { valid: true };
 ```
+
+The second argument to `test` is the `Context` object, which is used if you need to reference other fields.
+
+`Context: { parent, root, path }`
+
+`parent` is the parent value of the current node
+
+```javascript
+const schema = ok.object({
+  foo: ok
+    .string()
+    .test((v, { parent }) => console.log(`Value: ${v}, parent: ${parent}`)),
+  bar: ok.string(),
+});
+schema.validate({ foo: 'Foo!', bar: 'Bar!' });
+// Value: Foo!, parent: { foo: 'Foo!', bar: 'Bar!' }
+```
+
+`root` is the value passed to `validate`
+
+```javascript
+const schema = ok.object({
+  deep: ok.object({
+    nesting: ok.object({
+      foo: ok
+        .string()
+        .test((v, { root }) => console.log(`Value: ${v}, root: ${root}`)),
+    }),
+  }),
+});
+schema.validate({ deep: { nesting: { foo: 'Foo!' } } });
+// Value: Foo!, root: { deep: { nesting: { foo: 'Foo!' } } }
+```
+
+`path` is an array of strings of the path to the current node
+
+```javascript
+const schema = ok.object({
+  nested: ok.object({
+    array: ok.array(
+      ok
+        .string()
+        .test((v, { path }) => console.log(`Value: ${v}, path: ${path}`))
+    ),
+  }),
+});
+schema.validate({ nested: { array: ['Foo!'] } });
+// Value: Foo!, path: ['nested', 'array', '0']
+```
+
+Note that these tests will run even if the value is null, undefined, or empty, unlike the type specific tests (eg. `max`, `.length`, etc).
 
 ## string
 

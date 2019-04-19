@@ -1,6 +1,6 @@
 {
   "name": "ok-form",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "minimal js object validation",
   "author": "Ryan Baxley",
   "license": "MIT",

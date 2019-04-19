@@ -9,11 +9,13 @@ minimal js object schema validation
 
 ## Introduction
 
-ok-form is a simple, predictable object schema validator that is optimized for front-end validation of forms.
+ok-form is a simple, predictable object schema validator that is optimized for validation of forms.
 
-[joi](https://github.com/hapijs/joi) and [yup](https://github.com/jquense/yup) are both great libraries for validation. However, they have expansive APIs, and can make simple validation cases harder than it needs to be [(more on that here)](#TODO).
+[joi](https://github.com/hapijs/joi) and [yup](https://github.com/jquense/yup) are both good libraries, but can cause friction when used for validating web forms. ok-form improves upon them by:
 
-ok-form differs from these libraries by offering a small API, having sensible casting behavior by default, and offering a very explicit API for conditional validation.
+- having a smaller bundle size (4kB vs 20+kB)
+- having a sensible default casting behavior
+- offering a very explicit API for conditional validation and references (no magic strings!)
 
 ## Installation
 
@@ -451,14 +453,19 @@ schema.validate({ a: 1, b: 1 }) // -> { valid: true };
 
 ```
 
-# issues with joi and yup / why not...
+## Issues with joi and yup
 
 ## joi
 
-Hard to set error msgs
-bundle size?
+Bundlesize: joi is 29.6kB gzipped, compared to ok-form at 4.25kB
+
+Setting a custom error message for a specific test in the schema is way too difficult
 
 # yup
+
+Bundlesize: joi is 21.6kB gzipped, compared to ok-form at 4.25kB
+
+Handling number fields was
 
 converting string -> number is a pain
 dsl for conditional validation is strange

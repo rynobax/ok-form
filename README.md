@@ -4,7 +4,7 @@ Javscript schema-based validation for forms
 
 [![Build Status](https://travis-ci.com/rynobax/ok-form.svg?branch=master)](https://travis-ci.com/rynobax/ok-form)
 [![Stable Release](https://img.shields.io/npm/v/ok-form.svg)](https://npm.im/ok-form)
-[![gzip size](http://img.badgesize.io/https://unpkg.com/ok-form@latest/lib/index.js?compression=gzip)](https://unpkg.com/ok-form@latest/lib/index.js)
+[![gzip size](http://img.badgesize.io/https://unpkg.com/ok-form@latest/dist/ok-form.umd.min.js?compression=gzip)](https://unpkg.com/ok-form@latest/dist/ok-form.umd.min.js)
 [![license](https://badgen.now.sh/badge/license/MIT)](./LICENSE)
 
 ## Introduction

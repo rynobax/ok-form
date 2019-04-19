@@ -7,7 +7,7 @@
   "main": "./lib/index.js",
   "types": "./types/index.d.ts",
   "scripts": {
-    "build": "yarn run clean && yarn run build:src && yarn run build:types",
+    "build": "yarn run clean && yarn run build:src && yarn run build:types && yarn run build:readme",
     "build:readme": "doctoc README.md",
     "build:src": "babel ./src -o ./lib/index.js --ignore=**/__tests__/* --extensions .ts -s",
     "build:types": "tsc --emitDeclarationOnly",

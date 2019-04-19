@@ -1,6 +1,6 @@
-import OKAny from './any';
+import OKAny, { TransformFn } from './any';
 declare class OKNumber<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
-    constructor(msg?: string);
+    constructor(msg?: string, transform?: TransformFn<Input, Parent, Root>);
     private addTest;
     /**
      * Verify that the number is greater than a value

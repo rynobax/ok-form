@@ -1,4 +1,4 @@
-import OKAny from './any';
+import OKAny, { TransformFn } from './any';
 import OKArray from './array';
 import OKBoolean from './boolean';
 import OKNumber from './number';
@@ -22,8 +22,10 @@ declare const ok: {
      *
      * @param msg The error message if the schema cannot convert the value to a
      * boolean
+     *
+     * @param transform Override the default boolean transformation
      */
-    boolean: <Input = any, Parent = any, Root = any>(msg?: string | undefined) => OKBoolean<Input, Parent, Root>;
+    boolean: <Input = any, Parent = any, Root = any>(msg?: string | undefined, transform?: TransformFn<Input, Parent, Root> | undefined) => OKBoolean<Input, Parent, Root>;
     /**
      * Create a number schema
      *
@@ -34,8 +36,10 @@ declare const ok: {
      *
      * @param msg The error message if the schema cannot convert the value to a
      * number
+     *
+     * @param transform Override the default number transformation
      */
-    number: <Input = any, Parent = any, Root = any>(msg?: string | undefined) => OKNumber<Input, Parent, Root>;
+    number: <Input = any, Parent = any, Root = any>(msg?: string | undefined, transform?: TransformFn<Input, Parent, Root> | undefined) => OKNumber<Input, Parent, Root>;
     /**
      * Create an object schema, which will only accept an object
      * @param shape A schema for the object
@@ -50,7 +54,9 @@ declare const ok: {
      * The values null and undefined will be left as is
      * @param msg The error message if the schema cannot convert the value to a
      * string
+     *
+     * @param transform Override the default string transformation
      */
-    string: <Input = any, Parent = any, Root = any>(msg?: string | undefined) => OKString<Input, Parent, Root>;
+    string: <Input = any, Parent = any, Root = any>(msg?: string | undefined, transform?: TransformFn<Input, Parent, Root> | undefined) => OKString<Input, Parent, Root>;
 };
 export default ok;

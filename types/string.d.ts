@@ -1,6 +1,6 @@
-import OKAny from './any';
+import OKAny, { TransformFn } from './any';
 declare class OKString<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
-    constructor(msg?: string);
+    constructor(msg?: string, transform?: TransformFn<Input, Parent, Root>);
     /**
      * Verify that the string is an exact length
      * @param len required length of array

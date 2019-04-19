@@ -1,4 +1,3 @@
-import { ValidationRuntimeError } from './errors';
 export interface ValidationErrorObject {
     [key: string]: ValidationError;
 }
@@ -10,7 +9,6 @@ interface ResultValid {
 }
 interface ResultInvalidBase {
     valid: false;
-    validationError: ValidationRuntimeError;
 }
 interface ResultInvalidPrimitive extends ResultInvalidBase {
     error: string;
@@ -33,17 +31,17 @@ interface Test<Input, Parent, Root> {
     testFn: TestFn<Input, Parent, Root>;
     skipIfNull?: boolean;
 }
-declare type TransformFn<Input, Parent, Root> = (val: Input, context: TestContext<Parent, Root>) => any;
+export declare type TransformFn<Input, Parent, Root> = (val: Input, context: TestContext<Parent, Root>) => any;
 declare class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
     private isOptional;
     private requiredMessage;
     protected tests: Test<Input, Parent, Root>[];
     protected transforms: TransformFn<Input, Parent, Root>[];
     constructor();
-    protected error(msg: string, validationError?: ValidationRuntimeError): ResultInvalidPrimitive;
-    protected error(msg: ValidationErrorObject, validationError?: ValidationRuntimeError): ResultInvalidObject;
-    protected error(msg: (string | null)[], validationError?: ValidationRuntimeError): ResultInvalidObject;
-    protected error(msg: (ValidationErrorObject | null)[], validationError?: ValidationRuntimeError): ResultInvalidObject;
+    protected error(msg: string): ResultInvalidPrimitive;
+    protected error(msg: ValidationErrorObject): ResultInvalidObject;
+    protected error(msg: (string | null)[]): ResultInvalidObject;
+    protected error(msg: (ValidationErrorObject | null)[]): ResultInvalidObject;
     protected success(): ResultValid;
     protected getContext(): TestContext<Parent, Root>;
     protected makeAddTest: <T = unknown>() => (predicate: (v: T) => boolean, msg: string) => void;
@@ -77,7 +75,6 @@ declare class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
      * @param input The object to be cast
      */
     cast(input: Input): Input;
-    private handleValidationError;
     /**
      * Validate an object.  All transforms will be run, then all tests will
      * be run, and a result object will be returned.  If all the tests pass,

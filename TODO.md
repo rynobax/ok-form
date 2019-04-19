@@ -7,10 +7,6 @@ minimal
 
 ## Core
 
-- [ ] Write readme
-  - [x] Examples
-  - [ ] Typescript examples'
-  - [ ] Bades
 - [ ] Deploy and test
 
 ## Util

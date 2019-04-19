@@ -84,6 +84,10 @@ schema.validate({
     - [`any.required(msg: string)`](#anyrequiredmsg-string)
     - [`any.transform(transform: fn)`](#anytransformtransform-fn)
     - [`any.test(test: fn)`](#anytesttest-fn)
+    - [Context](#context)
+    - [Parent](#parent)
+    - [Root](#root)
+    - [Path](#path)
   - [string](#string)
     - [`string(msg?: string, transform?: fn): Schema`](#stringmsg-string-transform-fn-schema)
     - [`string.length(len: number, msg?: string)`](#stringlengthlen-number-msg-string)
@@ -111,6 +115,7 @@ schema.validate({
     - [`array.max()`](#arraymax)
 - [Tips](#tips)
   - [Conditional validation](#conditional-validation)
+  - [Typescript](#typescript)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -232,9 +237,13 @@ schema.cast('good'); // -> { valid: true };
 
 The second argument to `test` is the `Context` object, which is used if you need to reference other fields.
 
-`Context: { parent, root, path }`
+### Context
 
-`parent` is the parent value of the current node
+Context an object of the shape `{ parent: Parent, root: Root, path: string[] }`
+
+### Parent
+
+`parent` is the parent value of the current node, before transformation.
 
 ```javascript
 const schema = ok.object({
@@ -247,7 +256,9 @@ schema.validate({ foo: 'Foo!', bar: 'Bar!' });
 // Value: Foo!, parent: { foo: 'Foo!', bar: 'Bar!' }
 ```
 
-`root` is the value passed to `validate`
+### Root
+
+`root` is the value passed to `validate`, before transformation.
 
 ```javascript
 const schema = ok.object({
@@ -263,7 +274,9 @@ schema.validate({ deep: { nesting: { foo: 'Foo!' } } });
 // Value: Foo!, root: { deep: { nesting: { foo: 'Foo!' } } }
 ```
 
-`path` is an array of strings of the path to the current node
+### Path
+
+`path` is an array of strings of the path to the current node.
 
 ```javascript
 const schema = ok.object({
@@ -543,3 +556,17 @@ schema.validate({ a: 1, b: null }); // -> { valid: false };
 schema.validate({ a: null, b: 1 }); // -> { valid: false };
 schema.validate({ a: 1, b: 1 }); // -> { valid: true };
 ```
+
+## Typescript
+
+ok-form supports typescript out of the box. All of the schema constructors take 3 generic paramaters:
+
+```javascript
+ok.any<Input, Parent, Root>()
+```
+
+`Input` is the type of the object that it expects to be passed to `validate` and `cast`.
+
+`Parent` is the type of the schema's [Parent value](#parent)
+
+`Root` is the type of the schema's [Root value](#root)

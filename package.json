@@ -7,6 +7,9 @@
   "main": "dist/index.js",
   "module": "dist/ok-form.esm.js",
   "types": "types/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "yarn run clean && yarn run build:src && yarn run build:types && yarn run build:readme",
     "build:readme": "doctoc README.md",

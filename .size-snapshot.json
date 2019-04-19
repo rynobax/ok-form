@@ -1,0 +1,56 @@
+{
+  "./dist/ok-form.umd.production.js": {
+    "bundled": 31759,
+    "minified": 10851,
+    "gzipped": 2857
+  },
+  "./dist/ok-form.umd.development.js": {
+    "bundled": 31759,
+    "minified": 10851,
+    "gzipped": 2857
+  },
+  "./dist/ok-form.cjs.production.js": {
+    "bundled": 29533,
+    "minified": 11749,
+    "gzipped": 2854
+  },
+  "./dist/ok-form.cjs.development.js": {
+    "bundled": 29533,
+    "minified": 11749,
+    "gzipped": 2854
+  },
+  "dist/ok-form.esm.js": {
+    "bundled": 29516,
+    "minified": 11736,
+    "gzipped": 2846,
+    "treeshaked": {
+      "rollup": {
+        "code": 0,
+        "import_statements": 0
+      },
+      "webpack": {
+        "code": 951
+      }
+    }
+  },
+  "./dist/ok-form.umd.min.js": {
+    "bundled": 31759,
+    "minified": 10851,
+    "gzipped": 2857
+  },
+  "./dist/ok-form.umd.js": {
+    "bundled": 31759,
+    "minified": 10851,
+    "gzipped": 2857
+  },
+  "./dist/ok-form.cjs.min.js": {
+    "bundled": 29533,
+    "minified": 11749,
+    "gzipped": 2854
+  },
+  "./dist/ok-form.cjs.js": {
+    "bundled": 29533,
+    "minified": 11749,
+    "gzipped": 2854
+  }
+}

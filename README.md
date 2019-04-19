@@ -13,7 +13,7 @@ ok-form is a simple, predictable object schema validator that is optimized for v
 
 [joi](https://github.com/hapijs/joi) and [yup](https://github.com/jquense/yup) are both good libraries, but can cause friction when used for validating web forms. ok-form improves upon them by having:
 
-- a smaller bundle size (4kB vs 20+kB)
+- a smaller bundle size (3kB vs 20+kB)
 - sensible default casting behavior
 - a simple API for conditional validation and references (no magic strings or refs!)
 

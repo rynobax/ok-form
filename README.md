@@ -11,11 +11,11 @@ minimal js object schema validation
 
 ok-form is a simple, predictable object schema validator that is optimized for validation of forms.
 
-[joi](https://github.com/hapijs/joi) and [yup](https://github.com/jquense/yup) are both good libraries, but can cause friction when used for validating web forms. ok-form improves upon them by:
+[joi](https://github.com/hapijs/joi) and [yup](https://github.com/jquense/yup) are both good libraries, but can cause friction when used for validating web forms. ok-form improves upon them by having:
 
-- having a smaller bundle size (4kB vs 20+kB)
-- having a sensible default casting behavior
-- offering a very explicit API for conditional validation and references (no magic strings!)
+- a smaller bundle size (4kB vs 20+kB)
+- sensible default casting behavior
+- a simple API for conditional validation and references (no magic strings or refs!)
 
 ## Installation
 
@@ -71,7 +71,9 @@ schema.validate({
 
 ## API
 
-TODO: Links and stuff
+TODO: autogen table of contents
+
+## Schema
 
 ### Result
 
@@ -79,19 +81,12 @@ The response from `validate` and `validateAsync` takes the shape:
 
 `{ valid: boolean, error: any, validationError: ValidationError }`
 
-TODO: These are important, clean up text
+- `valid`: whether or not the value matches the schema
+- `error`: The schema's errors, where each error message is positioned where the error occured (see below for example)
 
-- `valid`: whether or not the value is valid
-- `error`: A mirror of the schema, where the key will be set to a string of the error message, if it was not valid.
-
-// TODO: maybe call these schema.?
-
-## any
-
-### `any.validate(value: any): Result`
+### `schema.validate(value: any): Result`
 
 Validates a value using the schema.
-// TODO: Note that this casts first
 
 ```
 const schema = ok.object({ foo: ok.number('Must be a number!') });
@@ -99,7 +94,7 @@ schema.validate({ foo: 5 }); // -> { valid: true, error: null }
 schema.validate({ foo: 'a' }); // -> { valid: false, error: { foo: 'Must be a number!' }
 ```
 
-### `any.validateAsync(value: any): Promise<Result>`
+### `schema.validateAsync(value: any): Promise<Result>`
 
 Validates an asynchronous schema.
 
@@ -111,7 +106,7 @@ schema.validateAsync('notInUse@email.com'); // -> Promise<{ valid: true, error: 
 schema.validateAsync('inUse@email.com'); // -> Promise<{ valid: false, error: 'Email already in use!'>
 ```
 
-### `any.cast(value: any): any`
+### `schema.cast(value: any): any`
 
 Attempts to cast a value using the schema.
 All transforms defined in the schema will be run, and the resulting object returned.
@@ -123,6 +118,21 @@ schema.cast({ foo: 5 }); // -> { foo: 5 }
 schema.cast({ foo: '5' }); // -> { foo: 5 }
 schema.cast(null); // -> null
 schema.cast(''); // -> ''
+```
+
+## any
+
+All of the `any` methods can also be used on the more specific schema types, like `string` or `object`.
+
+### `any(): Schema`
+
+Create a schema with minimal default validation/transformations. If you want to implement all validation logic yourself, you can use this.
+
+```
+const schema = ok.any();
+schema.validate(5) // -> { valid: true };
+schema.validate(true) // -> { valid: true };
+schema.validate({ foo: [1, 2, 3] }) // -> { valid: true };
 ```
 
 ### `any.optional()`
@@ -152,6 +162,8 @@ Add a transformation to the schema. These transformations will be run when a val
 
 The transformations will be run in the order they are defined.
 
+All transformations will run before validation.
+
 ```
 const schema = ok.number().transform(v => v * 2).max(10);
 schema.validate(8) // -> { valid: false, error: 'Must be less than or equal to 10' };
@@ -166,6 +178,8 @@ The test will be passed the value, and should return a string (the error message
 
 The second argument to `test` is the `Context` object, explained in detail [here](TODO)
 
+Note that these tests will run even if the value is nullish, unlike the type specific tests (eg. `max`, `.length`, etc).
+
 ```
 const schema = ok.string().test(v => {
   if (v === 'evil') return 'No evil allowed';
@@ -174,22 +188,9 @@ schema.validate('evil') // -> { valid: false, error: 'No evil allowed' };
 schema.cast('good') // -> { valid: true };
 ```
 
-// TODO: where should this go
-
-### `any()`
-
-Create a schema with minimal default validation/transformations. If you want to implement all validation logic yourself, you can use this.
-
-```
-const schema = ok.any();
-schema.validate(5) // -> { valid: true };
-schema.validate(true) // -> { valid: true };
-schema.validate({ foo: [1, 2, 3] }) // -> { valid: true };
-```
-
 ## string
 
-### `string(msg?: string, transform?: fn)`
+### `string(msg?: string, transform?: fn): Schema`
 
 Create a schema for a string.
 
@@ -257,7 +258,7 @@ schema.validate('hello world') // -> { valid: false };
 
 ## number
 
-### `number(msg?: string, transform?: fn)`
+### `number(msg?: string, transform?: fn): Schema`
 
 Create a schema for a number.
 
@@ -349,7 +350,7 @@ schema.validate(5.25) // -> { valid: false };
 
 ## boolean
 
-### `boolean(msg?: string, transform?: fn)`
+### `boolean(msg?: string, transform?: fn): Schema`
 
 Create a schema for a boolean.
 
@@ -364,11 +365,11 @@ schema.validate(5) // -> { valid: false };
 
 ## object
 
-### `object(shape: Shape, msg?: string)`
+### `object(shape: Shape, msg?: string): Schema`
 
 Create a schema for an object.
 
-// TODO: Clarify shape
+`Shape` is an object where each value is a schema.
 
 ```
 const schema = ok.object({ foo: ok.number(); });
@@ -379,11 +380,9 @@ schema.validate(5) // -> { valid: false };
 
 ## array
 
-### `array(shape: Shape, msg?: string)`
+### `array(shape: Schema, msg?: string): Schema`
 
 Create a schema for an array.
-
-// TODO: Clarify shape
 
 ```
 const schema = ok.array(ok.number());
@@ -452,26 +451,3 @@ schema.validate({ a: null, b: 1 }) // -> { valid: false };
 schema.validate({ a: 1, b: 1 }) // -> { valid: true };
 
 ```
-
-## Issues with joi and yup
-
-## joi
-
-Bundlesize: joi is 29.6kB gzipped, compared to ok-form at 4.25kB
-
-Setting a custom error message for a specific test in the schema is way too difficult
-
-# yup
-
-Bundlesize: joi is 21.6kB gzipped, compared to ok-form at 4.25kB
-
-Handling number fields was
-
-converting string -> number is a pain
-dsl for conditional validation is strange
-circular references
-
-// TODO: Random stuff
-if number is null, dont run "number" tests, but still run "any" tests
-
-note about required vs constructor

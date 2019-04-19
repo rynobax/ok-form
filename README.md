@@ -1,6 +1,6 @@
-# ok-form (WIP)
+# ok-form
 
-minimal js object schema validation
+Javscript schema-based validation for forms
 
 [![Build Status](https://travis-ci.com/rynobax/ok-form.svg?branch=master)](https://travis-ci.com/rynobax/ok-form)
 [![Stable Release](https://img.shields.io/npm/v/ok-form.svg)](https://npm.im/ok-form)

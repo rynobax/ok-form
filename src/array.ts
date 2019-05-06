@@ -34,7 +34,7 @@ class OKArray<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
 
     const foundError = errors.some(e => !e.valid);
     // typescript cannot comprehend that they are all of the same type
-    if (foundError) return this.error(errors.map(e => e.error) as any[]);
+    if (foundError) return this.error(errors.map(e => e.errors) as any[]);
 
     return this.success();
   }
@@ -53,7 +53,7 @@ class OKArray<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
 
     const foundError = errors.some(e => !e.valid);
     // typescript cannot comprehend that they are all of the same type
-    if (foundError) return this.error(errors.map(e => e.error) as any[]);
+    if (foundError) return this.error(errors.map(e => e.errors) as any[]);
 
     return this.success();
   }

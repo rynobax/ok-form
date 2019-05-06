@@ -21,7 +21,7 @@ test('custom message', () => {
   const customMsg = 'custom object err msg';
   const schema = ok.object({ a: ok.number() }, customMsg);
   const result = schema.validate('yo');
-  expect(result.error).toBe(customMsg);
+  expect(result.errors).toBe(customMsg);
 });
 
 describe('simple', () => {
@@ -56,7 +56,7 @@ describe('multiple keys', () => {
       a: 5,
       b: null,
     });
-    expect(result.error).toEqual({
+    expect(result.errors).toEqual({
       b: expect.any(String),
       c: expect.any(String),
     });
@@ -93,7 +93,7 @@ describe('nested', () => {
         },
       },
     });
-    expect(result.error).toEqual({
+    expect(result.errors).toEqual({
       nested: {
         b: expect.any(String),
         soDeep: {

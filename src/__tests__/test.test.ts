@@ -19,7 +19,7 @@ describe('primitive', () => {
 
   test('message', () => {
     const result = schema.validate(0);
-    expect(result.error).toBe(customMsg);
+    expect(result.errors).toBe(customMsg);
   });
 });
 

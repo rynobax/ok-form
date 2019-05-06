@@ -6,8 +6,7 @@ export type ValidationError = string | ValidationErrorObject;
 
 interface ResultValid {
   valid: true;
-  error: null;
-  validationError: null;
+  errors: null;
 }
 
 interface ResultInvalidBase {
@@ -15,11 +14,11 @@ interface ResultInvalidBase {
 }
 
 interface ResultInvalidPrimitive extends ResultInvalidBase {
-  error: string;
+  errors: string;
 }
 
 interface ResultInvalidObject extends ResultInvalidBase {
-  error: ValidationErrorObject;
+  errors: ValidationErrorObject;
 }
 
 type ResultInvalid = ResultInvalidPrimitive | ResultInvalidObject;
@@ -98,11 +97,11 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
       | (string | null)[]
       | (ValidationErrorObject | null)[]
   ) {
-    return { valid: false, error: msg };
+    return { valid: false, errors: msg };
   }
 
   protected success(): ResultValid {
-    return { valid: true, error: null, validationError: null };
+    return { valid: true, errors: null };
   }
 
   protected getContext(): TestContext<Parent, Root> {
@@ -235,7 +234,7 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
         }
         const res = await testFn(value, context);
         if (res instanceof OKAny)
-          return res.validateAsync(value).then(r => r.error);
+          return res.validateAsync(value).then(r => r.errors);
         else if (isString(res)) return res;
         else return null;
       })

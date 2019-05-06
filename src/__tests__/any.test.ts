@@ -53,21 +53,21 @@ describe('messages', () => {
 
   test('parsing message', () => {
     const result = schema.validate('&*^#');
-    expect(result.error).toEqual(customParsingMsg);
+    expect(result.errors).toEqual(customParsingMsg);
   });
 
   test('empty string message', () => {
     const result = schema.validate('');
-    expect(result.error).toEqual(customRequiredMsg);
+    expect(result.errors).toEqual(customRequiredMsg);
   });
 
   test('null message', () => {
     const result = schema.validate(null);
-    expect(result.error).toEqual(customRequiredMsg);
+    expect(result.errors).toEqual(customRequiredMsg);
   });
 
   test('undefined message', () => {
     const result = schema.validate(undefined);
-    expect(result.error).toEqual(customRequiredMsg);
+    expect(result.errors).toEqual(customRequiredMsg);
   });
 });

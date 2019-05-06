@@ -33,7 +33,7 @@ describe('validate sync with async test errors', () => {
       .max(50)
       .test(asyncTest);
     const result = await schema.validate(1);
-    expect(result.error).toEqual(errMsg);
+    expect(result.errors).toEqual(errMsg);
   });
 
   test('object', async () => {
@@ -44,7 +44,7 @@ describe('validate sync with async test errors', () => {
         .test(asyncTest),
     });
     const result = await schema.validate({ foo: 1 });
-    expect(result.error).toEqual({
+    expect(result.errors).toEqual({
       foo: errMsg,
     });
   });
@@ -57,7 +57,7 @@ describe('validate sync with async test errors', () => {
         .test(asyncTest)
     );
     const result = await schema.validate([1, 1]);
-    expect(result.error).toEqual([errMsg, errMsg]);
+    expect(result.errors).toEqual([errMsg, errMsg]);
   });
 });
 

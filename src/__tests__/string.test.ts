@@ -20,7 +20,7 @@ describe('parsing', () => {
     const customMsg = 'Custom validation msg';
     const schema = ok.string(customMsg);
     const result = schema.validate({});
-    expect(result.error).toBe(customMsg);
+    expect(result.errors).toBe(customMsg);
   });
 
   describe('optional', () => {
@@ -53,7 +53,7 @@ describe('length', () => {
 
   test('message', () => {
     const result = schema.validate('a');
-    expect(result.error).toBe(customMsg);
+    expect(result.errors).toBe(customMsg);
   });
 });
 
@@ -71,7 +71,7 @@ describe('min', () => {
 
   test('message', () => {
     const result = schema.validate('ab');
-    expect(result.error).toBe(customMsg);
+    expect(result.errors).toBe(customMsg);
   });
 });
 
@@ -89,7 +89,7 @@ describe('max', () => {
 
   test('message', () => {
     const result = schema.validate('abcdefg');
-    expect(result.error).toBe(customMsg);
+    expect(result.errors).toBe(customMsg);
   });
 });
 
@@ -107,7 +107,7 @@ describe('matches', () => {
 
   test('message', () => {
     const result = schema.validate('uPpErCaSe');
-    expect(result.error).toBe(customMsg);
+    expect(result.errors).toBe(customMsg);
   });
 });
 
@@ -125,6 +125,6 @@ describe('email', () => {
 
   test('message', () => {
     const result = schema.validate('not a valid email');
-    expect(result.error).toBe(customMsg);
+    expect(result.errors).toBe(customMsg);
   });
 });

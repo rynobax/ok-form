@@ -21,7 +21,7 @@ describe('parsing', () => {
   it('message', () => {
     const schema = ok.number(customMsg);
     const result = schema.validate('#^&#^');
-    expect(result.error).toBe(customMsg);
+    expect(result.errors).toBe(customMsg);
   });
 
   describe('optional', () => {
@@ -57,7 +57,7 @@ describe('min', () => {
 
   test('message', () => {
     const result = schema.validate(5);
-    expect(result.error).toBe(customMsg);
+    expect(result.errors).toBe(customMsg);
   });
 });
 
@@ -80,7 +80,7 @@ describe('max', () => {
 
   test('message', () => {
     const result = schema.validate(15);
-    expect(result.error).toBe(customMsg);
+    expect(result.errors).toBe(customMsg);
   });
 });
 
@@ -103,7 +103,7 @@ describe('lessThan', () => {
 
   test('message', () => {
     const result = schema.validate(15);
-    expect(result.error).toBe(customMsg);
+    expect(result.errors).toBe(customMsg);
   });
 });
 
@@ -126,7 +126,7 @@ describe('moreThan', () => {
 
   test('message', () => {
     const result = schema.validate(5);
-    expect(result.error).toBe(customMsg);
+    expect(result.errors).toBe(customMsg);
   });
 });
 
@@ -149,7 +149,7 @@ describe('positive', () => {
 
   test('message', () => {
     const result = schema.validate(-5);
-    expect(result.error).toBe(customMsg);
+    expect(result.errors).toBe(customMsg);
   });
 });
 
@@ -172,7 +172,7 @@ describe('negative', () => {
 
   test('message', () => {
     const result = schema.validate(5);
-    expect(result.error).toBe(customMsg);
+    expect(result.errors).toBe(customMsg);
   });
 });
 
@@ -190,7 +190,7 @@ describe('integer', () => {
 
   test('message', () => {
     const result = schema.validate(372.21475815);
-    expect(result.error).toBe(customMsg);
+    expect(result.errors).toBe(customMsg);
   });
 });
 
@@ -210,12 +210,12 @@ describe('combos', () => {
 
     test('min fail', () => {
       const result = schema.validate(-5);
-      expect(result.error).toBe(minMsg);
+      expect(result.errors).toBe(minMsg);
     });
 
     test('integer fail', () => {
       const result = schema.validate(5.213);
-      expect(result.error).toBe(intMsg);
+      expect(result.errors).toBe(intMsg);
     });
   });
 

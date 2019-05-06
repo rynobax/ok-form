@@ -57,16 +57,16 @@ class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
 
     // Each key
     let foundError = false;
-    const error: ValidationError = {};
+    const errors: ValidationError = {};
     for (const { ok, val, key } of this.iterateShape(input)) {
       const res = ok.validate(val);
       if (!res.valid) {
         foundError = true;
-        error[key] = res.error;
+        errors[key] = res.errors;
       }
     }
 
-    if (foundError) return this.error(error);
+    if (foundError) return this.error(errors);
 
     return this.success();
   }
@@ -80,18 +80,18 @@ class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
 
     // Each key
     let foundError = false;
-    const error: ValidationError = {};
+    const errors: ValidationError = {};
     await Promise.all(
       this.iterateShape(input).map(async ({ ok, val, key }) => {
         const res = await ok.validateAsync(val);
         if (!res.valid) {
           foundError = true;
-          error[key] = res.error;
+          errors[key] = res.errors;
         }
       })
     );
 
-    if (foundError) return this.error(error);
+    if (foundError) return this.error(errors);
 
     return this.success();
   }

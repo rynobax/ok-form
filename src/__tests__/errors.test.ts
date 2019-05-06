@@ -27,9 +27,9 @@ test('validate string to object nested', () => {
       string: ok.number(),
     }),
   });
-  const { error, valid } = schema.validate({ foo: 'lol' });
+  const { errors, valid } = schema.validate({ foo: 'lol' });
   expect(valid).toEqual(false);
-  expect(error).toEqual({ foo: 'Must be an object' });
+  expect(errors).toEqual({ foo: 'Must be an object' });
 });
 
 test('.test that throws', () => {

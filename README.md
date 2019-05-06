@@ -47,7 +47,7 @@ schema.validate({
   password: 'supersecret',
   confirmPassword: 'supersecret',
 });
-// -> { valid: true, error: null }
+// -> { valid: true, errors: null }
 
 schema.validate({
   email: 'not an email',
@@ -59,7 +59,7 @@ schema.validate({
 ->
 {
   valid: false,
-  error: {
+  errors: {
     email: 'Invalid email',
     age: 'Must be a number',
     password: 'Password must be at least 8 characters!',
@@ -127,10 +127,10 @@ schema.validate({
 
 The response from `validate` and `validateAsync` takes the shape:
 
-`{ valid: boolean, error: any, validationError: ValidationError }`
+`{ valid: boolean, errors: any, validationError: ValidationError }`
 
 - `valid`: whether or not the value matches the schema
-- `error`: The schema's errors, where each error message is positioned where the error occured (see below for example)
+- `errors`: The schema's errors, where each error message is positioned where the error occured (see below for example)
 
 ### `schema.validate(value: any): Result`
 
@@ -138,8 +138,8 @@ Validates a value using the schema.
 
 ```javascript
 const schema = ok.object({ foo: ok.number('Must be a number!') });
-schema.validate({ foo: 5 }); // -> { valid: true, error: null }
-schema.validate({ foo: 'a' }); // -> { valid: false, error: { foo: 'Must be a number!' }
+schema.validate({ foo: 5 }); // -> { valid: true, errors: null }
+schema.validate({ foo: 'a' }); // -> { valid: false, errors: { foo: 'Must be a number!' }
 ```
 
 ### `schema.validateAsync(value: any): Promise<Result>`
@@ -150,8 +150,8 @@ Validates an asynchronous schema.
 const schema = ok
   .string()
   .test(async v => (await emailInUse(v)) && 'Email already in use!');
-schema.validateAsync('notInUse@email.com'); // -> Promise<{ valid: true, error: null }>
-schema.validateAsync('inUse@email.com'); // -> Promise<{ valid: false, error: 'Email already in use!'>
+schema.validateAsync('notInUse@email.com'); // -> Promise<{ valid: true, errors: null }>
+schema.validateAsync('inUse@email.com'); // -> Promise<{ valid: false, errors: 'Email already in use!'>
 ```
 
 ### `schema.cast(value: any): any`
@@ -189,9 +189,9 @@ Marks the schema as optional, meaning that `""`, `null`, `undefined` are conside
 
 ```javascript
 const schema = ok.string().optional();
-schema.validate(''); // -> { valid: true, error: null };
-schema.validate(null); // -> { valid: true, error: null };
-schema.validate(undefined); // -> { valid: true, error: null };
+schema.validate(''); // -> { valid: true };
+schema.validate(null); // -> { valid: true };
+schema.validate(undefined); // -> { valid: true };
 ```
 
 ### `any.required(msg: string)`
@@ -200,8 +200,8 @@ Fields are required by default. If you want to specify the error message for an 
 
 ```javascript
 const schema = ok.string().required('This is required!');
-schema.validate(''); // -> { valid: false, error: 'This is required!' };
-schema.validate(null); // -> { valid: false, error: 'This is required!' };
+schema.validate(''); // -> { valid: false, errors: 'This is required!' };
+schema.validate(null); // -> { valid: false, errors: 'This is required!' };
 ```
 
 ### `any.transform(transform: fn)`
@@ -217,7 +217,7 @@ const schema = ok
   .number()
   .transform(v => v * 2)
   .max(10);
-schema.validate(8); // -> { valid: false, error: 'Must be less than or equal to 10' };
+schema.validate(8); // -> { valid: false };
 schema.cast(8); // -> 16;
 ```
 
@@ -231,7 +231,7 @@ The test will be passed the value, and should return a string (the error message
 const schema = ok.string().test(v => {
   if (v === 'evil') return 'No evil allowed';
 });
-schema.validate('evil'); // -> { valid: false, error: 'No evil allowed' };
+schema.validate('evil'); // -> { valid: false, errors: 'No evil allowed' };
 schema.cast('good'); // -> { valid: true };
 ```
 
@@ -570,3 +570,23 @@ ok.any<Input, Parent, Root>()
 `Parent` is the type of the schema's [Parent value](#parent)
 
 `Root` is the type of the schema's [Root value](#root)
+
+## Usage with Formik
+
+[Formik](https://formik.dev) is a great tool for reducing form boilerplate. Here's how you would integrate ok-form with it:
+
+```javascript
+const schema = ok.object({ name: ok.string(); email: ok.string() });
+const form = () => (
+  <Formik
+    validationSchema={}
+  >
+    {/* Form code */}
+  </Formik>
+)
+
+```
+
+## TODO:
+
+Returning null vs {}

@@ -22,7 +22,7 @@ describe('parsing', () => {
 test('custom message', () => {
   const schema = ok.array(ok.number(), customMsg);
   const result = schema.validate('yo');
-  expect(result.error).toBe(customMsg);
+  expect(result.errors).toBe(customMsg);
 });
 
 describe('array of primitives', () => {
@@ -42,7 +42,7 @@ describe('array of primitives', () => {
 
   test('message', () => {
     const result = schema.validate([5, 'lsdfjlk']);
-    expect(result.error).toEqual([null, 'Must be a number']);
+    expect(result.errors).toEqual([null, 'Must be a number']);
   });
 });
 
@@ -60,7 +60,7 @@ describe('array of objects', () => {
 
   test('invalid', () => {
     const result = schema.validate([{ foo: 'lsdfjlk' }]);
-    expect(result.error).toEqual([{ foo: 'Must be a number' }]);
+    expect(result.errors).toEqual([{ foo: 'Must be a number' }]);
   });
 });
 
@@ -74,7 +74,7 @@ describe('array of arrays', () => {
 
   test('invalid', () => {
     const result = schema.validate([['fdsklfj']]);
-    expect(result.error).toEqual([['Must be a number']]);
+    expect(result.errors).toEqual([['Must be a number']]);
   });
 });
 
@@ -99,7 +99,7 @@ describe('length', () => {
 
   test('message', () => {
     const result = schema.validate([5]);
-    expect(result.error).toEqual(customMsg);
+    expect(result.errors).toEqual(customMsg);
   });
 });
 
@@ -123,7 +123,7 @@ describe('min', () => {
 
   test('message', () => {
     const result = schema.validate([5]);
-    expect(result.error).toEqual(customMsg);
+    expect(result.errors).toEqual(customMsg);
   });
 });
 
@@ -147,6 +147,6 @@ describe('max', () => {
 
   test('message', () => {
     const result = schema.validate([5, 5, 5, 5]);
-    expect(result.error).toEqual(customMsg);
+    expect(result.errors).toEqual(customMsg);
   });
 });

@@ -25,7 +25,7 @@ describe('sign up', () => {
       confirmPassword: 'supersecret',
     });
     expect(result.valid).toBe(true);
-    expect(result.error).toEqual(null);
+    expect(result.errors).toEqual(null);
   });
 
   test('invalid', () => {
@@ -38,7 +38,7 @@ describe('sign up', () => {
       confirmPassword: 'notsecret',
     });
     expect(result.valid).toBe(false);
-    expect(result.error).toEqual({
+    expect(result.errors).toEqual({
       email: 'Invalid email',
       age: 'Must be a number',
       password: 'Password must be at least 8 characters!',
@@ -70,7 +70,7 @@ describe('sign up async', () => {
       password: 'supersecret',
     });
     expect(result.valid).toBe(true);
-    expect(result.error).toEqual(null);
+    expect(result.errors).toEqual(null);
   });
 
   test('invalid', async () => {
@@ -79,7 +79,7 @@ describe('sign up async', () => {
       password: 'supersecret',
     });
     expect(result.valid).toBe(false);
-    expect(result.error).toEqual({
+    expect(result.errors).toEqual({
       username: 'Username already in use',
     });
   });
@@ -111,7 +111,7 @@ describe('residents', () => {
       ],
     });
     expect(result.valid).toBe(true);
-    expect(result.error).toEqual(null);
+    expect(result.errors).toEqual(null);
   });
 
   test('invalid', async () => {
@@ -124,7 +124,7 @@ describe('residents', () => {
       ],
     });
     expect(result.valid).toBe(false);
-    expect(result.error).toEqual({
+    expect(result.errors).toEqual({
       residents: [
         { name: 'Name is required!' },
         null,

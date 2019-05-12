@@ -579,14 +579,10 @@ ok.any<Input, Parent, Root>()
 const schema = ok.object({ name: ok.string(); email: ok.string() });
 const form = () => (
   <Formik
-    validationSchema={}
+    validate={{values => schema.validate(values).error}}
   >
     {/* Form code */}
   </Formik>
 )
 
 ```
-
-## TODO:
-
-Returning null vs {}

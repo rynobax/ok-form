@@ -110,12 +110,13 @@ schema.validate({
     - [`object(shape: Shape, msg?: string): Schema`](#objectshape-shape-msg-string-schema)
   - [array](#array)
     - [`array(shape: Schema, msg?: string): Schema`](#arrayshape-schema-msg-string-schema)
-    - [`array.length()`](#arraylength)
-    - [`array.min()`](#arraymin)
-    - [`array.max()`](#arraymax)
+    - [`array.length(len: number, msg?: string)`](#arraylengthlen-number-msg-string)
+    - [`array.min(len: number, msg?: string)`](#arrayminlen-number-msg-string)
+    - [`array.max(len: number, msg?: string)`](#arraymaxlen-number-msg-string)
 - [Tips](#tips)
   - [Conditional validation](#conditional-validation)
   - [Typescript](#typescript)
+  - [Usage with Formik](#usage-with-formik)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 

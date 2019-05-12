@@ -4,17 +4,16 @@ export interface ValidationErrorObject {
 export declare type ValidationError = string | ValidationErrorObject;
 interface ResultValid {
     valid: true;
-    error: null;
-    validationError: null;
+    errors: null;
 }
 interface ResultInvalidBase {
     valid: false;
 }
 interface ResultInvalidPrimitive extends ResultInvalidBase {
-    error: string;
+    errors: string;
 }
 interface ResultInvalidObject extends ResultInvalidBase {
-    error: ValidationErrorObject;
+    errors: ValidationErrorObject;
 }
 declare type ResultInvalid = ResultInvalidPrimitive | ResultInvalidObject;
 export declare type Result = ResultValid | ResultInvalid;

@@ -128,7 +128,7 @@ schema.validate({
 
 The response from `validate` and `validateAsync` takes the shape:
 
-`{ valid: boolean, errors: any, validationError: ValidationError }`
+`{ valid: boolean, errors: any }`
 
 - `valid`: whether or not the value matches the schema
 - `errors`: The schema's errors, where each error message is positioned where the error occured (see below for example)

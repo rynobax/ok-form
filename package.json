@@ -8,7 +8,8 @@
   "module": "dist/ok-form.esm.js",
   "types": "types/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "types"
   ],
   "keywords": [
     "validation",

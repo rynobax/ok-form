@@ -580,7 +580,7 @@ ok.any<Input, Parent, Root>()
 const schema = ok.object({ name: ok.string(); email: ok.string() });
 const form = () => (
   <Formik
-    validate={values => schema.validate(values).error}
+    validate={values => schema.validate(values).errors}
   >
     {/* Form code */}
   </Formik>

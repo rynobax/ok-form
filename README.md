@@ -562,11 +562,11 @@ schema.validate({ a: 1, b: 1 }); // -> { valid: true };
 
 ok-form supports typescript out of the box. All of the schema constructors take 3 generic paramaters:
 
-```javascript
-ok.any<Input, Parent, Root>()
+```typescript
+ok.any<Input, Parent, Root>();
 ```
 
-`Input` is the type of the object that it expects to be passed to `validate` and `cast`.
+`Input` is the type of the object that it expects to be passed to `validate` and `cast`. For objects, it is also used to infer the shape of the schema you should pass it.
 
 `Parent` is the type of the schema's [Parent value](#parent)
 
@@ -580,8 +580,10 @@ ok.any<Input, Parent, Root>()
 const schema = ok.object({ name: ok.string(); email: ok.string() });
 const form = () => (
   <Formik
-    validate={values => schema.validate(values).errors}
+    validate={values => schema.validate(values).errors || {}}
   >
+    {/* `|| {}` is necessary because Formik expects an empty object instead */}
+    {/* of null if there are no errors */}
     {/* Form code */}
   </Formik>
 )

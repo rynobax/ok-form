@@ -149,3 +149,28 @@ describe('root shape', () => {
     }),
   });
 });
+
+describe('schema shape', () => {
+  interface Input {
+    foo: string;
+    bar: string;
+  }
+
+  /* GOOD */
+  ok.object<Input>({
+    foo: ok.number(),
+    bar: ok.number(),
+  });
+
+  /* BAD */
+  ok.object<Input>({
+    foo: ok.number(),
+    bar: ok.number(),
+    qux: ok.number(),
+  });
+
+  /* BAD */
+  ok.object<Input>({
+    foo: ok.number(),
+  });
+});

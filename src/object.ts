@@ -1,8 +1,6 @@
 import OKAny, { ValidationError, Result } from './any';
 
-export interface Shape<Input> {
-  [key: string]: OKAny<Input>;
-}
+export type Shape<Input> = { [key in keyof Input]: OKAny };
 
 interface UnknownObj {
   [key: string]: unknown;
@@ -30,7 +28,7 @@ class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     // If input in null return immediately
     if (!input) return [];
     return Object.keys(this.shape).map(key => {
-      const ok = this.shape[key];
+      const ok = this.shape[key as keyof Shape<Input>];
       const val: any = (input as UnknownObj)[key];
       return { ok, val, key };
     });
@@ -40,7 +38,7 @@ class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     // If input in null return immediately
     if (!input) return;
     Object.keys(this.shape).forEach(key => {
-      const ok = this.shape[key];
+      const ok = this.shape[key as keyof Shape<Input>];
       ok.__parent = (input as unknown) as Parent;
       // If this already has a root, pass in that one
       ok.__root = this.__root || ((input as unknown) as Root);

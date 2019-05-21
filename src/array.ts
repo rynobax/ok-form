@@ -1,4 +1,4 @@
-import OKAny, { Result } from './any';
+import OKAny from './any';
 
 class OKArray<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
   private shape: OKAny;
@@ -22,7 +22,7 @@ class OKArray<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     this.shape.__path = this.__path.concat(String(ndx));
   }
 
-  public validate(input: Input): Result {
+  public validate(input: Input) {
     // Generic validation
     const superRes = super.validate(input);
     if (!superRes.valid) return superRes;
@@ -39,7 +39,7 @@ class OKArray<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     return this.success();
   }
 
-  public async validateAsync(input: Input): Promise<Result> {
+  public async validateAsync(input: Input) {
     // Generic validation
     const superRes = await super.validateAsync(input);
     if (!superRes.valid) return superRes;

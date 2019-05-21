@@ -1,10 +1,17 @@
+type ValidationErrorPrimitive = string;
+
 export interface ValidationErrorObject {
   [key: string]: ValidationError;
 }
 
-export type ValidationError = string | ValidationErrorObject;
+interface ValidationErrorArray extends Array<ValidationError> {}
 
-interface ResultValid {
+type ValidationError =
+  | ValidationErrorPrimitive
+  | ValidationErrorObject
+  | ValidationErrorArray;
+
+export interface ResultValid {
   valid: true;
   errors: null;
 }
@@ -14,16 +21,31 @@ interface ResultInvalidBase {
 }
 
 interface ResultInvalidPrimitive extends ResultInvalidBase {
-  errors: string;
+  errors: ValidationErrorPrimitive;
 }
 
 interface ResultInvalidObject extends ResultInvalidBase {
   errors: ValidationErrorObject;
 }
 
-type ResultInvalid = ResultInvalidPrimitive | ResultInvalidObject;
+interface ResultInvalidArray extends ResultInvalidBase {
+  errors: ValidationErrorArray;
+}
 
-export type Result = ResultValid | ResultInvalid;
+export interface ResultInvalidAny extends ResultInvalidBase {
+  errors: any;
+}
+
+type ResultPrimitive = ResultValid | ResultInvalidPrimitive;
+type ResultObject = ResultValid | ResultInvalidObject;
+type ResultArray = ResultValid | ResultInvalidArray;
+
+// One day the return type of this fn might could be more exact, but because
+// errors could be a non object it doesn't play nice with Formik.  For now just
+// leave it as any
+type ResultAny = ResultValid | ResultInvalidAny;
+
+export type Result = ResultPrimitive | ResultObject | ResultArray | ResultAny;
 
 interface TestContext<Parent, Root> {
   parent: Parent;
@@ -66,7 +88,7 @@ function isString(val: any): val is string {
   return typeof val === 'string';
 }
 
-class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
+class OKAny<Input = any, Parent = any, Root = any> {
   /* Instance keeping track of stuff */
   private isOptional = false;
   private requiredMessage = 'Required';
@@ -86,16 +108,11 @@ class OKAny<Input = unknown, Parent = unknown, Root = unknown> {
 
   /* Internal */
 
-  protected error(msg: string): ResultInvalidPrimitive;
+  protected error(msg: ValidationErrorPrimitive): ResultInvalidPrimitive;
   protected error(msg: ValidationErrorObject): ResultInvalidObject;
-  protected error(msg: (string | null)[]): ResultInvalidObject;
-  protected error(msg: (ValidationErrorObject | null)[]): ResultInvalidObject;
+  protected error(msg: ValidationErrorArray): ResultInvalidArray;
   protected error(
-    msg:
-      | string
-      | ValidationErrorObject
-      | (string | null)[]
-      | (ValidationErrorObject | null)[]
+    msg: ValidationErrorPrimitive | ValidationErrorObject | ValidationErrorArray
   ) {
     return { valid: false, errors: msg };
   }

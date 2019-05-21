@@ -174,3 +174,27 @@ describe('schema shape', () => {
     foo: ok.number(),
   });
 });
+
+describe('validate can be passed to fn expecting object (formik)', () => {
+  interface Input {
+    foo: string;
+    bar: string;
+  }
+
+  const schema = ok.object<Input>({
+    foo: ok.number(),
+    bar: ok.number(),
+  });
+
+  const val = {
+    foo: '',
+    bar: '',
+  };
+
+  function acceptsObject(str: {}) {
+    str;
+  }
+
+  /* GOOD */
+  acceptsObject(schema.validate(val).errors);
+});

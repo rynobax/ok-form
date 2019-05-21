@@ -1,4 +1,4 @@
-import OKAny, { ValidationError, Result } from './any';
+import OKAny, { ValidationErrorObject } from './any';
 
 export type Shape<Input> = { [key in keyof Input]: OKAny };
 
@@ -46,7 +46,7 @@ class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     });
   }
 
-  public validate(input: Input): Result {
+  public validate(input: Input) {
     this.setContext(input);
 
     // Generic validation
@@ -55,7 +55,7 @@ class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
 
     // Each key
     let foundError = false;
-    const errors: ValidationError = {};
+    const errors: ValidationErrorObject = {};
     for (const { ok, val, key } of this.iterateShape(input)) {
       const res = ok.validate(val);
       if (!res.valid) {
@@ -69,7 +69,7 @@ class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     return this.success();
   }
 
-  public async validateAsync(input: Input): Promise<Result> {
+  public async validateAsync(input: Input) {
     this.setContext(input);
 
     // Generic validation
@@ -78,7 +78,7 @@ class OKObject<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
 
     // Each key
     let foundError = false;
-    const errors: ValidationError = {};
+    const errors: ValidationErrorObject = {};
     await Promise.all(
       this.iterateShape(input).map(async ({ ok, val, key }) => {
         const res = await ok.validateAsync(val);

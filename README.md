@@ -226,7 +226,7 @@ schema.cast(8); // -> 16;
 
 Adds a custom test function to the schema.
 
-The test will be passed the value, and should return a string (the error message) if there is an issue, or a non string if the value is valid.
+The test will be passed the value, and should return a non me string (the error message) if there is an issue, or a non string (or empty string) if the value is valid.
 
 ```javascript
 const schema = ok.string().test(v => {

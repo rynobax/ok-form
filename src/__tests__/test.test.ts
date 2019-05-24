@@ -23,6 +23,38 @@ describe('primitive', () => {
   });
 });
 
+describe('short circuit', () => {
+  test('empty string returned is converted to null', () => {
+    const schema = ok
+      .string()
+      .optional()
+      .test(() => '' && ok.string());
+
+    const result = schema.validate('hi');
+    expect(result.errors).toBe(null);
+  });
+
+  test('false returned is converted to null', () => {
+    const schema = ok
+      .string()
+      .optional()
+      .test(() => false && ok.string());
+
+    const result = schema.validate('hi');
+    expect(result.errors).toBe(null);
+  });
+
+  test('undefined returned is converted to null', () => {
+    const schema = ok
+      .string()
+      .optional()
+      .test(() => undefined && ok.string());
+
+    const result = schema.validate('hi');
+    expect(result.errors).toBe(null);
+  });
+});
+
 describe('object', () => {
   const schema = ok.object({
     even: ok.number().test((v: any) => v % 2 !== 0 && 'Must be even'),

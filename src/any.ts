@@ -221,7 +221,7 @@ class OKAny<Input = any, Parent = any, Root = any> {
           'Cannot run async test in validate, use validateAsync'
         );
       else if (res instanceof OKAny) return res.validate(value);
-      else if (isString(res)) return this.error(res);
+      else if (!checkNullish(res) && isString(res)) return this.error(res);
     }
 
     return this.success();

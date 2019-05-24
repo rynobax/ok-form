@@ -14,7 +14,7 @@ declare const ok: {
      * @param shape A schema for the elements of the array
      * @param msg The error message if the schema is not passed an array
      */
-    array: <Input = any, Parent = any, Root = any>(shape: OKAny<unknown, unknown, unknown>, msg?: string | undefined) => OKArray<Input, Parent, Root>;
+    array: <Input = any, Parent = any, Root = any>(shape: OKAny<any, any, any>, msg?: string | undefined) => OKArray<Input, Parent, Root>;
     /**
      * Create a boolean schema
      *

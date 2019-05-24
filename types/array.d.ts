@@ -1,12 +1,12 @@
-import OKAny, { Result } from './any';
+import OKAny from './any';
 declare class OKArray<Input, Parent, Root> extends OKAny<Input, Parent, Root> {
     private shape;
     private parseErrorMsg;
     constructor(shape: OKAny, msg?: string);
     private addTest;
     private setContext;
-    validate(input: Input): Result;
-    validateAsync(input: Input): Promise<Result>;
+    validate(input: Input): import("./any").ResultValid | import("./any").ResultInvalidAny;
+    validateAsync(input: Input): Promise<import("./any").ResultValid | import("./any").ResultInvalidAny>;
     cast(input: Input): Input;
     /**
      * Verify that the array is an exact length

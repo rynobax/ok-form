@@ -20,9 +20,9 @@
     "gzipped": 2854
   },
   "dist/ok-form.esm.js": {
-    "bundled": 29520,
-    "minified": 11740,
-    "gzipped": 2844,
+    "bundled": 29552,
+    "minified": 11759,
+    "gzipped": 2848,
     "treeshaked": {
       "rollup": {
         "code": 0,
@@ -34,23 +34,23 @@
     }
   },
   "./dist/ok-form.umd.min.js": {
-    "bundled": 31761,
-    "minified": 10844,
-    "gzipped": 2856
+    "bundled": 31795,
+    "minified": 10863,
+    "gzipped": 2859
   },
   "./dist/ok-form.umd.js": {
-    "bundled": 31761,
-    "minified": 10844,
-    "gzipped": 2856
+    "bundled": 31795,
+    "minified": 10863,
+    "gzipped": 2859
   },
   "./dist/ok-form.cjs.min.js": {
-    "bundled": 29537,
-    "minified": 11753,
-    "gzipped": 2854
+    "bundled": 29569,
+    "minified": 11772,
+    "gzipped": 2857
   },
   "./dist/ok-form.cjs.js": {
-    "bundled": 29537,
-    "minified": 11753,
-    "gzipped": 2854
+    "bundled": 29569,
+    "minified": 11772,
+    "gzipped": 2857
   }
 }

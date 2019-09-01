@@ -99,7 +99,7 @@ describe('uses last', () => {
       expect(result.valid).toBe(false);
     });
 
-    test.only('not required', () => {
+    test('not required', () => {
       const result = schema.validate({ required: false, value: null });
       expect(result.valid).toBe(true);
     });

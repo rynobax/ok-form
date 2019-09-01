@@ -31,3 +31,4 @@ build/
 tsconfig.tsbuildinfo
 
 dist
+types

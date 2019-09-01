@@ -176,6 +176,7 @@ class OKAny<Input = any, Parent = any, Root = any> {
    * @param msg Error message if field is empty (empty string, null, undefined)
    */
   public required(msg?: string) {
+    this.isOptional = false;
     if (msg) {
       this.requiredMessage = msg;
     }
